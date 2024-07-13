@@ -1,6 +1,6 @@
 import SimpConsentQrUrlModal from '@/components/vendor/modal/SimpConsentQrUrlModal';
 import { useState } from 'react';
-import SelectField from '@/components/common/SelectField';
+import ProductSelectField from '@/components/common/ProductSelectField';
 import Checkbox from '@/components/common/CheckBox';
 
 const SettingSimpConsentPage = () => {
@@ -42,7 +42,7 @@ const SettingSimpConsentPage = () => {
                 상품<span className='ml-1 text-red-500'>*</span>
               </h3>
               <div className='flex items-center'>
-                <SelectField
+                <ProductSelectField
                   onChange={handleProductChange}
                   label='상품을 선택해주세요.'
                   required={true}

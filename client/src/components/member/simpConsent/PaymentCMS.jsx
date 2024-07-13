@@ -89,6 +89,10 @@ const PaymentCMS = () => {
           onBlur={handleBlur}
         />
       </form>
+
+      <button className='mt-4 w-full rounded-lg border border-teal-400 bg-white py-2 text-sm font-normal text-teal-400 transition-colors hover:bg-teal-50'>
+        계좌 인증하기
+      </button>
     </div>
   );
 };
