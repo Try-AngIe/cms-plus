@@ -1,6 +1,5 @@
 package kr.or.kosa.cmsplusmain.domain.vendor.repository;
 
-import static kr.or.kosa.cmsplusmain.domain.vendor.entity.QVendor.*;
 
 import org.springframework.stereotype.Repository;
 
@@ -9,6 +8,8 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import kr.or.kosa.cmsplusmain.domain.base.repository.BaseCustomRepository;
 import kr.or.kosa.cmsplusmain.domain.vendor.entity.Vendor;
+
+import static kr.or.kosa.cmsplusmain.domain.vendor.entity.QVendor.vendor;
 
 @Repository
 public class VendorCustomRepository extends BaseCustomRepository<Vendor> {

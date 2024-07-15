@@ -9,9 +9,7 @@ import java.util.concurrent.TimeUnit;
 import kr.or.kosa.cmsplusmain.domain.payment.entity.PaymentMethod;
 import kr.or.kosa.cmsplusmain.domain.payment.entity.PaymentType;
 import kr.or.kosa.cmsplusmain.domain.product.entity.Product;
-import kr.or.kosa.cmsplusmain.domain.product.entity.ProductStatus;
 import kr.or.kosa.cmsplusmain.domain.product.repository.ProductCustomRepository;
-import kr.or.kosa.cmsplusmain.domain.product.repository.ProductRepository;
 import kr.or.kosa.cmsplusmain.domain.settings.entity.SimpConsentSetting;
 import kr.or.kosa.cmsplusmain.domain.vendor.entity.Vendor;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -34,7 +32,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class VendorService {
-	private final VendorCustomRepository vendorRepository;
+	private final VendorCustomRepository vendorCustomRepository;
 	private final ProductCustomRepository productCustomRepository;
 	private final VendorRepository vendorRepository;
 	private final BCryptPasswordEncoder bCryptPasswordEncoder;

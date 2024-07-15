@@ -13,6 +13,7 @@ import java.util.Optional;
 import static kr.or.kosa.cmsplusmain.domain.member.entity.QMember.member;
 import static kr.or.kosa.cmsplusmain.domain.vendor.entity.QVendor.vendor;
 
+
 @Repository
 public class MemberCustomRepository extends BaseCustomRepository<Member> {
     public MemberCustomRepository(EntityManager em, JPAQueryFactory jpaQueryFactory) {

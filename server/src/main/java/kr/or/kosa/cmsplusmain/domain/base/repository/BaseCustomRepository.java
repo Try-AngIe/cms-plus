@@ -1,14 +1,14 @@
 package kr.or.kosa.cmsplusmain.domain.base.repository;
 
-import static kr.or.kosa.cmsplusmain.domain.billing.entity.QBilling.*;
-import static kr.or.kosa.cmsplusmain.domain.billing.entity.QBillingProduct.*;
-import static kr.or.kosa.cmsplusmain.domain.billing.entity.QBillingStandard.*;
-import static kr.or.kosa.cmsplusmain.domain.contract.entity.QContract.*;
-import static kr.or.kosa.cmsplusmain.domain.contract.entity.QContractProduct.*;
-import static kr.or.kosa.cmsplusmain.domain.member.entity.QMember.*;
-import static kr.or.kosa.cmsplusmain.domain.payment.entity.QPayment.*;
-import static kr.or.kosa.cmsplusmain.domain.product.entity.QProduct.*;
-import static kr.or.kosa.cmsplusmain.domain.vendor.entity.QVendor.*;
+import static kr.or.kosa.cmsplusmain.domain.billing.entity.QBilling.billing;
+import static kr.or.kosa.cmsplusmain.domain.billing.entity.QBillingProduct.billingProduct;
+import static kr.or.kosa.cmsplusmain.domain.billing.entity.QBillingStandard.billingStandard;
+import static kr.or.kosa.cmsplusmain.domain.contract.entity.QContract.contract;
+import static kr.or.kosa.cmsplusmain.domain.contract.entity.QContractProduct.contractProduct;
+import static kr.or.kosa.cmsplusmain.domain.member.entity.QMember.member;
+import static kr.or.kosa.cmsplusmain.domain.payment.entity.QPayment.payment;
+import static kr.or.kosa.cmsplusmain.domain.product.entity.QProduct.product;
+import static kr.or.kosa.cmsplusmain.domain.vendor.entity.QVendor.vendor;
 import static org.springframework.util.StringUtils.*;
 
 import java.time.LocalDate;
@@ -37,7 +37,6 @@ import kr.or.kosa.cmsplusmain.domain.billing.entity.BillingStatus;
 import kr.or.kosa.cmsplusmain.domain.contract.entity.ContractStatus;
 import kr.or.kosa.cmsplusmain.domain.payment.entity.ConsentStatus;
 import kr.or.kosa.cmsplusmain.domain.payment.entity.PaymentType;
-import kr.or.kosa.cmsplusmain.domain.product.entity.QProduct;
 import lombok.RequiredArgsConstructor;
 
 @Repository

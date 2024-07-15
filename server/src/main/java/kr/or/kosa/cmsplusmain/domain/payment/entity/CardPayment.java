@@ -2,6 +2,7 @@ package kr.or.kosa.cmsplusmain.domain.payment.entity;
 
 import java.time.LocalDate;
 
+import lombok.*;
 import org.hibernate.annotations.Comment;
 
 import jakarta.persistence.Column;
@@ -10,15 +11,14 @@ import jakarta.persistence.Entity;
 import jakarta.validation.constraints.NotNull;
 import kr.or.kosa.cmsplusmain.domain.base.validator.PersonName;
 import kr.or.kosa.cmsplusmain.domain.payment.validator.CardNumber;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Comment("결제수단 - 카드")
 @Entity
 @DiscriminatorValue(PaymentMethod.Values.CARD)
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
 public class CardPayment extends PaymentMethodInfo {
 
 	@Comment("카드 번호")

@@ -2,6 +2,8 @@ package kr.or.kosa.cmsplusmain.domain.payment.entity;
 
 import java.time.LocalDate;
 
+import kr.or.kosa.cmsplusmain.domain.payment.dto.CMSInfo;
+import lombok.*;
 import org.hibernate.annotations.Comment;
 
 import jakarta.persistence.Column;
@@ -12,15 +14,14 @@ import jakarta.validation.constraints.NotNull;
 import kr.or.kosa.cmsplusmain.domain.base.validator.PersonName;
 import kr.or.kosa.cmsplusmain.domain.payment.converter.BankConverter;
 import kr.or.kosa.cmsplusmain.domain.payment.validator.AccountNumber;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Comment("결제수단 - CMS")
 @Entity
 @DiscriminatorValue(PaymentMethod.Values.CMS)
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
 public class CmsPayment extends PaymentMethodInfo {
 
 	@Comment("CMS 계좌 은행")
@@ -44,5 +45,6 @@ public class CmsPayment extends PaymentMethodInfo {
 	@Column(name = "cms_owner_birth", nullable = false)
 	@NotNull
 	private LocalDate accountOwnerBirth;
+
 }
 
