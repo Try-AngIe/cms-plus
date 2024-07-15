@@ -11,7 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/vendor/simpconsent-settings")
+@RequestMapping("/api/v1/vendor/simple-consent")
 @RequiredArgsConstructor
 public class SimpConsentSettingController {
 

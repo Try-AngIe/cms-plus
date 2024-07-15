@@ -13,7 +13,7 @@ import kr.or.kosa.cmsplusmain.domain.payment.dto.CardInfo;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/v1/card")
+@RequestMapping("/api/v1/simple-consent/card")
 @RequiredArgsConstructor
 public class CardVerificationController {
 

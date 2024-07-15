@@ -12,7 +12,7 @@ import kr.or.kosa.cmsplusmain.domain.payment.dto.CMSInfo;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/v1/cms")
+@RequestMapping("/api/v1/simple-consent/cms")
 @RequiredArgsConstructor
 public class CmsVerificationController {
 

@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1/upload")
+@RequestMapping("/api/v1/simple-consent/sign")
 @RequiredArgsConstructor
 public class FileUploadController {
 
