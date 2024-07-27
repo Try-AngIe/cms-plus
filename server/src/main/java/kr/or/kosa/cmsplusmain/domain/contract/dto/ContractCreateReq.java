@@ -13,11 +13,17 @@ import kr.or.kosa.cmsplusmain.domain.contract.validator.ContractName;
 import kr.or.kosa.cmsplusmain.domain.member.entity.Member;
 import kr.or.kosa.cmsplusmain.domain.payment.entity.Payment;
 import kr.or.kosa.cmsplusmain.domain.vendor.entity.Vendor;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @Builder
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class ContractCreateReq {
 
 	@ContractName @NotNull

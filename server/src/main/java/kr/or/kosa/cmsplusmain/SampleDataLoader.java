@@ -8,22 +8,20 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
-import kr.or.kosa.cmsplusmain.domain.contract.entity.ContractStatus;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
+import jakarta.annotation.PostConstruct;
 import kr.or.kosa.cmsplusmain.domain.billing.entity.Billing;
 import kr.or.kosa.cmsplusmain.domain.billing.entity.BillingProduct;
 import kr.or.kosa.cmsplusmain.domain.billing.repository.BillingRepository;
 import kr.or.kosa.cmsplusmain.domain.contract.entity.Contract;
 import kr.or.kosa.cmsplusmain.domain.contract.entity.ContractProduct;
+import kr.or.kosa.cmsplusmain.domain.contract.entity.ContractStatus;
 import kr.or.kosa.cmsplusmain.domain.contract.repository.ContractRepository;
+import kr.or.kosa.cmsplusmain.domain.kafka.MessageSendMethod;
 import kr.or.kosa.cmsplusmain.domain.member.entity.Address;
 import kr.or.kosa.cmsplusmain.domain.member.entity.Member;
 import kr.or.kosa.cmsplusmain.domain.member.repository.MemberRepository;
-import kr.or.kosa.cmsplusmain.domain.kafka.MessageSendMethod;
 import kr.or.kosa.cmsplusmain.domain.payment.entity.Payment;
 import kr.or.kosa.cmsplusmain.domain.payment.entity.method.CardPaymentMethod;
 import kr.or.kosa.cmsplusmain.domain.payment.entity.method.CmsPaymentMethod;
@@ -58,7 +56,7 @@ public class SampleDataLoader {
 	private final Random random = new Random();
 	private final RandomGenerator randomGenerator = new RandomGenerator(random);
 
-	@Transactional
+	@PostConstruct
 	public void init() {
 		Vendor vendor = vendorRepository.save(
 			createVendorWithDefaultProduct(

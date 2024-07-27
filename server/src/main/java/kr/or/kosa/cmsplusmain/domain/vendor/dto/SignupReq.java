@@ -10,11 +10,13 @@ import kr.or.kosa.cmsplusmain.domain.base.validator.Username;
 import kr.or.kosa.cmsplusmain.domain.vendor.entity.UserRole;
 import kr.or.kosa.cmsplusmain.domain.vendor.entity.Vendor;
 import kr.or.kosa.cmsplusmain.domain.vendor.validator.Password;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
 @Builder
 @Getter
+@AllArgsConstructor
 public class SignupReq {
 
 	@Username

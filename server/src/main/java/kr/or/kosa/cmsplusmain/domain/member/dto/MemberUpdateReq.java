@@ -1,5 +1,7 @@
 package kr.or.kosa.cmsplusmain.domain.member.dto;
 
+import java.time.LocalDate;
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import kr.or.kosa.cmsplusmain.domain.base.validator.HomePhone;
@@ -8,10 +10,10 @@ import kr.or.kosa.cmsplusmain.domain.base.validator.PersonName;
 import kr.or.kosa.cmsplusmain.domain.base.validator.Phone;
 import kr.or.kosa.cmsplusmain.domain.member.entity.Address;
 import lombok.Getter;
-
-import java.time.LocalDate;
+import lombok.Setter;
 
 @Getter
+@Setter
 public class MemberUpdateReq {
 
     @NotNull

@@ -1,0 +1,102 @@
+= Vendor API 문서
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+
+[[overview]]
+== 개요
+
+이 문서는 Vendor API에 대한 설명을 제공합니다.
+
+[[api-list]]
+== API 목록
+
+[[join]]
+=== 회원 가입
+
+==== HTTP 요청
+include::{snippets}/vendor-join/http-request.adoc[]
+
+==== HTTP 응답
+include::{snippets}/vendor-join/http-response.adoc[]
+
+==== 요청 필드
+include::{snippets}/vendor-join/request-fields.adoc[]
+
+[[check-username]]
+=== 사용자 아이디 중복 확인
+
+==== HTTP 요청
+include::{snippets}/vendor-check-username/http-request.adoc[]
+
+==== HTTP 응답
+include::{snippets}/vendor-check-username/http-response.adoc[]
+
+==== 요청 파라미터
+include::{snippets}/vendor-check-username/query-parameters.adoc[]
+
+[[refresh]]
+=== 토큰 갱신
+
+==== HTTP 요청
+include::{snippets}/vendor-refresh/http-request.adoc[]
+
+==== HTTP 응답
+include::{snippets}/vendor-refresh/http-response.adoc[]
+
+==== 응답 필드
+include::{snippets}/vendor-refresh/response-fields.adoc[]
+
+[[find-identifier]]
+=== 아이디 찾기
+
+==== HTTP 요청
+include::{snippets}/vendor-find-identifier/http-request.adoc[]
+
+==== HTTP 응답
+include::{snippets}/vendor-find-identifier/http-response.adoc[]
+
+==== 요청 필드
+include::{snippets}/vendor-find-identifier/request-fields.adoc[]
+
+==== 응답 필드
+include::{snippets}/vendor-find-identifier/response-fields.adoc[]
+
+[[find-password]]
+=== 비밀번호 찾기
+
+==== HTTP 요청
+include::{snippets}/vendor-find-password/http-request.adoc[]
+
+==== HTTP 응답
+include::{snippets}/vendor-find-password/http-response.adoc[]
+
+==== 요청 필드
+include::{snippets}/vendor-find-password/request-fields.adoc[]
+
+[[reset-password]]
+=== 비밀번호 재설정
+
+==== HTTP 요청
+include::{snippets}/vendor-reset-password/http-request.adoc[]
+
+==== HTTP 응답
+include::{snippets}/vendor-reset-password/http-response.adoc[]
+
+==== 요청 필드
+include::{snippets}/vendor-reset-password/request-fields.adoc[]
+
+[[request-authentication-number]]
+=== 인증번호 요청
+
+==== HTTP 요청
+include::{snippets}/vendor-request-authentication-number/http-request.adoc[]
+
+==== HTTP 응답
+include::{snippets}/vendor-request-authentication-number/http-response.adoc[]
+
+==== 요청 필드
+include::{snippets}/vendor-request-authentication-number/request-fields.adoc[]

@@ -3,8 +3,10 @@ package kr.or.kosa.cmsplusmain.domain.member.dto;
 import jakarta.validation.constraints.NotNull;
 import kr.or.kosa.cmsplusmain.domain.kafka.MessageSendMethod;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
+@Setter
 public class MemberBillingUpdateReq {
     @NotNull
     private MessageSendMethod invoiceSendMethod; // 청구 전송 방법

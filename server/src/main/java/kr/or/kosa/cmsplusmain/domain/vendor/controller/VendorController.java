@@ -2,11 +2,6 @@ package kr.or.kosa.cmsplusmain.domain.vendor.controller;
 
 import java.io.IOException;
 
-import kr.or.kosa.cmsplusmain.domain.vendor.dto.Identifier.IdFindReq;
-import kr.or.kosa.cmsplusmain.domain.vendor.dto.Identifier.IdFindRes;
-import kr.or.kosa.cmsplusmain.domain.vendor.dto.authenticationNumber.NumberReq;
-import kr.or.kosa.cmsplusmain.domain.vendor.dto.password.PwFindReq;
-import kr.or.kosa.cmsplusmain.domain.vendor.dto.password.PwResetReq;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,14 +11,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
-import kr.or.kosa.cmsplusmain.SampleDataLoader;
-import kr.or.kosa.cmsplusmain.domain.vendor.jwt.JWTUtil;
+import kr.or.kosa.cmsplusmain.domain.vendor.dto.Identifier.IdFindReq;
+import kr.or.kosa.cmsplusmain.domain.vendor.dto.Identifier.IdFindRes;
 import kr.or.kosa.cmsplusmain.domain.vendor.dto.RefreshTokenRes;
 import kr.or.kosa.cmsplusmain.domain.vendor.dto.SignupReq;
+import kr.or.kosa.cmsplusmain.domain.vendor.dto.authenticationNumber.NumberReq;
+import kr.or.kosa.cmsplusmain.domain.vendor.dto.password.PwFindReq;
+import kr.or.kosa.cmsplusmain.domain.vendor.dto.password.PwResetReq;
+import kr.or.kosa.cmsplusmain.domain.vendor.jwt.JWTUtil;
 import kr.or.kosa.cmsplusmain.domain.vendor.service.VendorService;
 import lombok.RequiredArgsConstructor;
 
@@ -33,12 +31,6 @@ import lombok.RequiredArgsConstructor;
 public class VendorController {
 	private final VendorService vendorService;
 	private final JWTUtil jwtUtil;
-	private final SampleDataLoader dataLoader;
-
-	@PostConstruct
-	public void init() {
-		dataLoader.init();
-	}
 
 	/*
 	 * 회원 가입

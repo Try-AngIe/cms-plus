@@ -2,6 +2,18 @@ package kr.or.kosa.cmsplusmain.domain.member.controller;
 
 import java.util.List;
 
+import org.springframework.http.MediaType;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
 import jakarta.validation.Valid;
 import kr.or.kosa.cmsplusmain.domain.base.dto.PageReq;
 import kr.or.kosa.cmsplusmain.domain.base.dto.PageRes;
@@ -24,11 +36,6 @@ import kr.or.kosa.cmsplusmain.domain.vendor.dto.VendorUserDetailsDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.http.MediaType;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
 @Slf4j
 @RestController
 @RequestMapping("/api/v1/vendor/management")
@@ -44,7 +51,9 @@ public class MemberController {
      * */
     @GetMapping("/members")
     public PageRes<MemberListItemRes> getMemberList(@AuthenticationPrincipal VendorUserDetailsDto userDetails, MemberSearchReq memberSearch, PageReq pageable) {
-        Long vendorId = userDetails.getId();
+        // Long vendorId = userDetails.getId();
+        Long vendorId = 1L;
+
         return memberService.searchMembers(vendorId, memberSearch, pageable);
     }
 
@@ -61,7 +70,9 @@ public class MemberController {
      * */
     @GetMapping("/members/{memberId}")
     public MemberDetail getMemberDetail(@AuthenticationPrincipal VendorUserDetailsDto userDetails, @PathVariable Long memberId) {
-       Long vendorId = userDetails.getId();
+       // Long vendorId = userDetails.getId();
+        Long vendorId = 1L;
+
        return memberService.findMemberDetailById(vendorId, memberId);
     }
 
@@ -70,7 +81,9 @@ public class MemberController {
      * */
     @GetMapping("/members/contracts/{memberId}")
     public PageRes<MemberContractListItemRes> getMemberContractList(@AuthenticationPrincipal VendorUserDetailsDto userDetails, @PathVariable Long memberId , PageReq pageable) {
-        Long vendorId = userDetails.getId();
+        // Long vendorId = userDetails.getId();
+        Long vendorId = 1L;
+
         return memberService.findContractListItemByMemberId(vendorId, memberId, pageable);
     }
 
@@ -79,7 +92,9 @@ public class MemberController {
      * */
     @PostMapping("/members")
     public void createMember(@AuthenticationPrincipal VendorUserDetailsDto userDetails, @RequestBody @Valid MemberCreateReq memberCreateReq) {
-        Long vendorId = userDetails.getId();
+        // Long vendorId = userDetails.getId();
+        Long vendorId = 1L;
+
         memberService.createMember(vendorId, memberCreateReq);
     }
 
@@ -88,7 +103,9 @@ public class MemberController {
      * */
     @PutMapping("/members/{memberId}")
     public void updateMember(@AuthenticationPrincipal VendorUserDetailsDto userDetails , @RequestBody @Valid MemberUpdateReq memberUpdateReq, @PathVariable Long memberId) {
-        Long vendorId = userDetails.getId();
+        // Long vendorId = userDetails.getId();
+        Long vendorId = 1L;
+
         memberService.updateMember(vendorId, memberId, memberUpdateReq);
     }
 
@@ -97,7 +114,7 @@ public class MemberController {
      * */
     @PutMapping("/members/billing/{memberId}")
     public void updateMemberBilling(@AuthenticationPrincipal VendorUserDetailsDto userDetails , @RequestBody @Valid MemberBillingUpdateReq memberBillingUpdateReq, @PathVariable Long memberId) {
-        Long vendorId = userDetails.getId();
+        Long vendorId = 1L;
         memberService.updateMemberBilling(vendorId, memberId, memberBillingUpdateReq);
     }
 
@@ -106,7 +123,9 @@ public class MemberController {
      * */
     @PutMapping("/members/payment/{contractId}")
     public void updateMemberPayment(@AuthenticationPrincipal VendorUserDetailsDto userDetails , @RequestBody @Valid PaymentUpdateReq paymentUpdateReq, @PathVariable Long contractId) {
-        Long vendorId = userDetails.getId();
+        // Long vendorId = userDetails.getId();
+        Long vendorId = 1L;
+
         paymentService.updatePayment(vendorId, contractId, paymentUpdateReq);
     }
 
@@ -115,7 +134,9 @@ public class MemberController {
      * */
     @DeleteMapping("/members/{memberId}")
     public void deleteMember(@AuthenticationPrincipal VendorUserDetailsDto userDetails ,  @PathVariable Long memberId) {
-        Long vendorId = userDetails.getId();
+        // Long vendorId = userDetails.getId();
+        Long vendorId = 1L;
+
         memberService.deleteMember(vendorId, memberId);
     }
 
@@ -124,7 +145,9 @@ public class MemberController {
      * */
     @GetMapping("/members/{memberId}/billing")
     public int getInProgressBillingCount(@AuthenticationPrincipal VendorUserDetailsDto userDetails , @PathVariable Long memberId) {
-        Long vendorId = userDetails.getId();
+        // Long vendorId = userDetails.getId();
+        Long vendorId = 1L;
+
         return memberService.countAllInProgressBillingByMember(vendorId, memberId);
     }
 
@@ -143,7 +166,9 @@ public class MemberController {
     * */
     @PostMapping(value = "/upload")
     public List<ExcelErrorRes<MemberExcelDto>> saveMembersByExcel(@RequestBody List<MemberExcelDto> memberExcelList) {
+        // Long vendorId = 1L;
         Long vendorId = 1L;
+
         return memberService.uploadMembersByExcel(vendorId, memberExcelList);
     }
 }
