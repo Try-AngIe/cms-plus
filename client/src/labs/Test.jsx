@@ -21,7 +21,7 @@ const Test = () => {
     const result = await alertComp(msg, type, title);
   };
 
-  console.log("infra test v0729-1");
+  console.log("infra test v0730-1");
 
   // type:
   // msg : 원하는 메세지
