@@ -1,4 +1,5 @@
 import { updatePaymentDetail } from '@/apis/payment';
+import { uploadConsentFile } from '@/apis/signature';
 import PaymentInfoForm from '@/components/common/memberForm/PaymentInfoForm';
 import useAlert from '@/hooks/useAlert';
 import { useMemberContractStore } from '@/stores/useMemberContractStore';
@@ -42,15 +43,29 @@ const UpdatePaymentInfo = ({ formType }) => {
     return paymentCreateReq;
   };
 
-  // <------ 결제 정보 수정 API ------>
+  // <------ 파일 업로드 및 결제 정보 수정 API ------>
   const axiosUpdatePaymentDetail = async () => {
     try {
-      const res = await updatePaymentDetail(contractId, transformPaymentInfo());
-      console.log('!----결제 정보 수정 성공----!', transformPaymentInfo()); // 삭제예정
+      let fileUrl = null;
+      if (payment.paymentType === 'AUTO' && payment.paymentTypeInfoReq_Auto.consetImgName) {
+        const file = await fetch(payment.paymentTypeInfoReq_Auto.consetImgName).then(r => r.blob());
+        const formData = new FormData();
+        formData.append('file', file, payment.paymentTypeInfoReq_Auto.consetImgName);
+        fileUrl = await uploadConsentFile(formData);
+      }
+
+      const paymentInfo = transformPaymentInfo();
+      if (fileUrl) {
+        paymentInfo.paymentTypeInfoReq.consentImgUrl = fileUrl;
+      }
+
+      const res = await updatePaymentDetail(contractId, paymentInfo);
+      console.log('!----결제 정보 수정 성공----!', paymentInfo); // 삭제예정
       await navigate(`/vendor/contracts/detail/${contractId}`);
       onAlert({ msg: '결제정보가 수정되었습니다!', type: 'success', title: '결제정보수정' });
     } catch (err) {
       console.error('axiosUpdatePaymentDetail => ', err.response);
+      onAlert({ msg: '결제정보 수정 중 오류가 발생했습니다.', type: 'error', title: '결제정보수정 실패' });
     }
   };
 
@@ -65,7 +80,8 @@ const UpdatePaymentInfo = ({ formType }) => {
         </button>
         <button
           className=' px-10 py-2 bg-mint rounded-lg text-white transition-all duration-200 hover:bg-mint_hover ml-3'
-          onClick={axiosUpdatePaymentDetail}>
+          onClick={axiosUpdatePaymentDetail}
+          >
           저장
         </button>
       </div>

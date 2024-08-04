@@ -12,11 +12,9 @@ import { verifyCard } from '@/apis/validation';
 import { validateField } from '@/utils/validators';
 import useAlert from '@/hooks/useAlert';
 import { useState } from 'react';
-import { uploadConsentFile } from '@/apis/signature';
-
 
 const CardMethodForm = ({ paymentMethod, formType }) => {
-  const [uploadStatus, setUploadStatus] = useState('');
+  const [selectedFile, setSelectedFile] = useState(null);
 
   const {
     paymentMethodInfoReq_Card,
@@ -27,54 +25,29 @@ const CardMethodForm = ({ paymentMethod, formType }) => {
 
   const onAlert = useAlert();
 
-  // <------ 인풋 필드 입력값 변경 ------>
+   // <------ 인풋 필드 입력값 변경 ------>
   const handleChangeInput = e => {
     const { id, value } = e.target;
     if (id === 'cardNumber') {
       const unformattedNumber = unformatCardNumber(value);
-      setPaymentMethodInfoReq_Card({ [id]: unformattedNumber });
+      setPaymentMethodInfoReq_Card({ ...paymentMethodInfoReq_Card, [id]: unformattedNumber });
     } else if (id === 'cardYear') {
-      setPaymentMethodInfoReq_Card({ [id]: formatCardYearForDisplay(value) });
+      setPaymentMethodInfoReq_Card({ ...paymentMethodInfoReq_Card, [id]: formatCardYearForDisplay(value) });
     } else if (id === 'cardMonth') {
-      setPaymentMethodInfoReq_Card({ [id]: formatCardMonthForDisplay(value) });
+      setPaymentMethodInfoReq_Card({ ...paymentMethodInfoReq_Card, [id]: formatCardMonthForDisplay(value) });
     } else {
-      setPaymentMethodInfoReq_Card({ [id]: value });
+      setPaymentMethodInfoReq_Card({ ...paymentMethodInfoReq_Card, [id]: value });
     }
   };
 
-   // <------ 파일 업로드 ------>
-   const handleUploadFile = async file => {
-    try {
-      const formData = new FormData();
-      formData.append('file', file);
-      
-      setUploadStatus('업로드 중...');
-      const fileUrl = await uploadConsentFile(formData);
-      
-      if (fileUrl) {
-        const currentTime = new Date().toISOString();
-        setPaymentTypeInfoReq_Auto({
-          consentImgUrl: fileUrl,
-          consetImgName: file.name,
-          simpleConsentReqDateTime: currentTime,
-        });
-        onAlert({
-          msg: '동의서 파일이 성공적으로 업로드되었습니다.',
-          type: 'success',
-          title: '파일 업로드 성공',
-        });
-      }
-    } catch (error) {
-      console.error('Error uploading consent file:', error);
-      onAlert({
-        msg: '동의서 파일 업로드 중 오류가 발생했습니다.',
-        type: 'error',
-        title: '파일 업로드 실패',
-      });
-    } finally {
-      setUploadStatus('');
-    }
+  const handleFileSelect = file => {
+    setSelectedFile(file);
+    setPaymentTypeInfoReq_Auto({
+      ...paymentTypeInfoReq_Auto,
+      consetImgName: file.name,
+    });
   };
+
   // <----- Card 인증 API ----->
   const axiosVerifyCard = async () => {
     try {
@@ -84,7 +57,6 @@ const CardMethodForm = ({ paymentMethod, formType }) => {
         ...paymentCardinfo,
       };
       const res = await verifyCard(transformPaymentCard);
-      console.log('!---- Card 인증 ----!'); // 삭제예정
 
       if (res) {
         onAlert({
@@ -153,8 +125,6 @@ const CardMethodForm = ({ paymentMethod, formType }) => {
               onChange={handleChangeInput}
             />
           </div>
-          {/* TODO */}
-          {/* 파일 삭제 버튼이 필요함 */}
           <div className='flex flex-1 items-end w-[50%]'>
             <InputWeb
               id='agreement'
@@ -166,7 +136,7 @@ const CardMethodForm = ({ paymentMethod, formType }) => {
               value={paymentTypeInfoReq_Auto.consetImgName}
               readOnly
             />
-            <FileUpload label='동의서 파일 선택' onFileSelect={handleUploadFile} />
+            <FileUpload label='동의서 파일 선택' onFileSelect={handleFileSelect} />
           </div>
         </div>
       </div>

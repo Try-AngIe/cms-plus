@@ -7,11 +7,10 @@ import FileUpload from '../../inputs/FileUpload';
 import { verifyCMS } from '@/apis/validation';
 import { validateField } from '@/utils/validators';
 import useAlert from '@/hooks/useAlert';
-import { uploadConsentFile } from '@/apis/signature';
 import { useState } from 'react';
 
 const CmsMethodForm = ({ paymentMethod, formType }) => {
-  const [uploadStatus, setUploadStatus] = useState('');
+  const [selectedFile, setSelectedFile] = useState(null);
 
   const {
     paymentMethodInfoReq_Cms,
@@ -22,48 +21,23 @@ const CmsMethodForm = ({ paymentMethod, formType }) => {
 
   const onAlert = useAlert();
 
-  // <----- 셀렉터 필드 은행명 변경 ----->
+    // <----- 셀렉터 필드 은행명 변경 ----->
   const handleChangeSelect = e => {
-    setPaymentMethodInfoReq_Cms({ bank: e.target.value });
-  };
-  // <----- 인풋 필드 입력값 변경 ----->
-  const handleChangeInput = e => {
-    const { id, value } = e.target;
-    setPaymentMethodInfoReq_Cms({ [id]: value });
+    setPaymentMethodInfoReq_Cms({ ...paymentMethodInfoReq_Cms, bank: e.target.value });
   };
 
-  // <----- 동의서 파일 업로드 ----->
-  const handleUploadFile = async file => {
-    try {
-      const formData = new FormData();
-      formData.append('file', file);
-      
-      setUploadStatus('업로드 중...');
-      const fileUrl = await uploadConsentFile(formData);
-      
-      if (fileUrl) {
-        const currentTime = new Date().toISOString();
-        setPaymentTypeInfoReq_Auto({
-          consentImgUrl: fileUrl,
-          consetImgName: file.name,
-          simpleConsentReqDateTime: currentTime,
-        });
-        onAlert({
-          msg: '동의서 파일이 성공적으로 업로드되었습니다.',
-          type: 'success',
-          title: '파일 업로드 성공',
-        });
-      }
-    } catch (error) {
-      console.error('Error uploading consent file:', error);
-      onAlert({
-        msg: '동의서 파일 업로드 중 오류가 발생했습니다.',
-        type: 'error',
-        title: '파일 업로드 실패',
-      });
-    } finally {
-      setUploadStatus('');
-    }
+   // <----- 인풋 필드 입력값 변경 ----->
+  const handleChangeInput = e => {
+    const { id, value } = e.target;
+    setPaymentMethodInfoReq_Cms({ ...paymentMethodInfoReq_Cms, [id]: value });
+  };
+
+  const handleFileSelect = file => {
+    setSelectedFile(file);
+    setPaymentTypeInfoReq_Auto({
+      ...paymentTypeInfoReq_Auto,
+      consetImgName: file.name,
+    });
   };
 
   // <----- 실시간 CMS 계좌인증 API ----->
@@ -75,7 +49,6 @@ const CmsMethodForm = ({ paymentMethod, formType }) => {
         ...paymentCmsinfo,
       };
       const res = await verifyCMS(transformPaymentCms);
-      console.log('!----실시간 CMS 계좌인증 API----!'); // 삭제예정
 
       if (res) {
         onAlert({ msg: '계좌인증에 성공하셨습니다!', type: 'success', title: '계좌 인증 성공' });
@@ -117,8 +90,6 @@ const CmsMethodForm = ({ paymentMethod, formType }) => {
             errorMsg='올바른 형식 아닙니다.'
           />
         </div>
-        {/* TODO */}
-        {/* 파일 삭제 버튼이 필요함 */}
         <div className='flex flex-1 items-end mb-4 ml-5 '>
           <InputWeb
             id='agreement'
@@ -130,7 +101,7 @@ const CmsMethodForm = ({ paymentMethod, formType }) => {
             value={paymentTypeInfoReq_Auto.consetImgName}
             readOnly
           />
-          <FileUpload label='동의서 파일 선택' onFileSelect={handleUploadFile} />
+          <FileUpload label='동의서 파일 선택' onFileSelect={handleFileSelect} />
         </div>
       </div>
       <div className='flex'>
