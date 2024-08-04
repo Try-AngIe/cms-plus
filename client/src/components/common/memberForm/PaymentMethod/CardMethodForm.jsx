@@ -11,8 +11,13 @@ import FileUpload from '../../inputs/FileUpload';
 import { verifyCard } from '@/apis/validation';
 import { validateField } from '@/utils/validators';
 import useAlert from '@/hooks/useAlert';
+import { useState } from 'react';
+import { uploadConsentFile } from '@/apis/signature';
+
 
 const CardMethodForm = ({ paymentMethod, formType }) => {
+  const [uploadStatus, setUploadStatus] = useState('');
+
   const {
     paymentMethodInfoReq_Card,
     setPaymentMethodInfoReq_Card,
@@ -37,12 +42,39 @@ const CardMethodForm = ({ paymentMethod, formType }) => {
     }
   };
 
-  // <------ 파일 업로드 ------>
-  const handleUploadFile = file => {
-    setPaymentTypeInfoReq_Auto({ consentImgUrl: URL.createObjectURL(file) });
-    setPaymentTypeInfoReq_Auto({ consetImgName: file.name });
+   // <------ 파일 업로드 ------>
+   const handleUploadFile = async file => {
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      
+      setUploadStatus('업로드 중...');
+      const fileUrl = await uploadConsentFile(formData);
+      
+      if (fileUrl) {
+        const currentTime = new Date().toISOString();
+        setPaymentTypeInfoReq_Auto({
+          consentImgUrl: fileUrl,
+          consetImgName: file.name,
+          simpleConsentReqDateTime: currentTime,
+        });
+        onAlert({
+          msg: '동의서 파일이 성공적으로 업로드되었습니다.',
+          type: 'success',
+          title: '파일 업로드 성공',
+        });
+      }
+    } catch (error) {
+      console.error('Error uploading consent file:', error);
+      onAlert({
+        msg: '동의서 파일 업로드 중 오류가 발생했습니다.',
+        type: 'error',
+        title: '파일 업로드 실패',
+      });
+    } finally {
+      setUploadStatus('');
+    }
   };
-
   // <----- Card 인증 API ----->
   const axiosVerifyCard = async () => {
     try {

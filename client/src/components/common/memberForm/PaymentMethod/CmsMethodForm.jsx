@@ -7,8 +7,12 @@ import FileUpload from '../../inputs/FileUpload';
 import { verifyCMS } from '@/apis/validation';
 import { validateField } from '@/utils/validators';
 import useAlert from '@/hooks/useAlert';
+import { uploadConsentFile } from '@/apis/signature';
+import { useState } from 'react';
 
 const CmsMethodForm = ({ paymentMethod, formType }) => {
+  const [uploadStatus, setUploadStatus] = useState('');
+
   const {
     paymentMethodInfoReq_Cms,
     setPaymentMethodInfoReq_Cms,
@@ -28,16 +32,38 @@ const CmsMethodForm = ({ paymentMethod, formType }) => {
     setPaymentMethodInfoReq_Cms({ [id]: value });
   };
 
-  // <----- 파일 업로드 ----->
-  const handleUploadFile = file => {
-    // TODO
-    // simpleConsentReqDateTime 동의 요청시간 일단은 현재시각으로 설정
-    const currentTime = new Date().toISOString();
-    setPaymentTypeInfoReq_Auto({
-      consentImgUrl: URL.createObjectURL(file),
-      consetImgName: file.name,
-      simpleConsentReqDateTime: currentTime,
-    });
+  // <----- 동의서 파일 업로드 ----->
+  const handleUploadFile = async file => {
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      
+      setUploadStatus('업로드 중...');
+      const fileUrl = await uploadConsentFile(formData);
+      
+      if (fileUrl) {
+        const currentTime = new Date().toISOString();
+        setPaymentTypeInfoReq_Auto({
+          consentImgUrl: fileUrl,
+          consetImgName: file.name,
+          simpleConsentReqDateTime: currentTime,
+        });
+        onAlert({
+          msg: '동의서 파일이 성공적으로 업로드되었습니다.',
+          type: 'success',
+          title: '파일 업로드 성공',
+        });
+      }
+    } catch (error) {
+      console.error('Error uploading consent file:', error);
+      onAlert({
+        msg: '동의서 파일 업로드 중 오류가 발생했습니다.',
+        type: 'error',
+        title: '파일 업로드 실패',
+      });
+    } finally {
+      setUploadStatus('');
+    }
   };
 
   // <----- 실시간 CMS 계좌인증 API ----->

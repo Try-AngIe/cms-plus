@@ -56,7 +56,6 @@ const Signature = ({ userData, setUserData, name }) => {
             link.href = fileUrl;
             link.download = 'signature.png';
             document.body.appendChild(link);
-            link.click();
             document.body.removeChild(link);
             setUploadStatus('다운로드 완료!');
           }

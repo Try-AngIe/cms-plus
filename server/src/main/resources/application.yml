@@ -33,6 +33,7 @@ cloud:
   aws:
     s3:
       bucket: ${S3_BUCKET}
+      consent-bucket: ${S3_CONSENT_BUCKET}
     stack.auto: false
     region.static: ap-northeast-2
     credentials:
