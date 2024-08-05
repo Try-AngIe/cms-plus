@@ -5,6 +5,10 @@ export default {
   content: ['./src/**/*.{html,js,jsx,ts,tsx}'],
   theme: {
     extend: {
+      fontFamily: {
+        'GeekbleMalang': ['GeekbleMalang'],
+      },
+
       colors: {
         mint: '#4FD1C5', // 메인컬러
         mint_hover: '#51B1A8', // 메인컬러 호버

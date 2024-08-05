@@ -29,6 +29,12 @@
 } */
 
 @font-face {
+  font-family: 'GeekbleMalang';
+  font-weight: 900;
+  src: url('../assets/font/GeekbleMalang2TTF.ttf') format('truetype');
+}
+
+@font-face {
   font-family: 'NanumSquareNeo';
   font-weight: 300;
   src: url(https://hangeul.pstatic.net/hangeul_static/webfont/NanumSquareNeo/NanumSquareNeoTTF-aLt.eot);
