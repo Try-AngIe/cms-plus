@@ -54,15 +54,38 @@ const ContractInfoForm = ({ formType }) => {
   const handleChangeValue = (e, index = null) => {
     const { id, value } = e.target;
 
+    // 계약명 입력
     if (id === 'contractName') {
       setContractInfoItem({ [id]: value });
-    } else if (index !== null) {
+      return;
+    }
+
+    // 상품정보 입력
+    if (index !== null) {
+      if (id === 'price' && value.length > 7) {
+        onAlert({ msg: '상품 가격은 최대 99만원입니다.', type: 'success' });
+        return;
+      }
+
+      if (id === 'quantity' && value.length >= 2) {
+        onAlert({ msg: '상품 수량은 최대 9개입니다.', type: 'success' });
+        return;
+      }
+
       const numericValue = value.replace(/\D/g, '');
-      const updatedSelectedProducts = contractInfo.contractProducts.map((product, idx) =>
-        idx === index
-          ? { ...product, [id]: numericValue === '' ? 0 : Number(numericValue) }
-          : product
-      );
+      const updatedSelectedProducts = contractInfo.contractProducts.map((product, idx) => {
+        if (idx !== index) return product;
+
+        let updatedValue = numericValue;
+
+        if (id === 'price') {
+          updatedValue = numericValue === '' ? 0 : Number(numericValue);
+        } else if (id === 'quantity') {
+          updatedValue = numericValue === '' ? '' : Number(numericValue);
+          if (updatedValue === 0) updatedValue = '';
+        }
+        return { ...product, [id]: updatedValue };
+      });
       setContractProducts(updatedSelectedProducts);
     }
   };
@@ -142,7 +165,7 @@ const ContractInfoForm = ({ formType }) => {
         </div>
       </div>
 
-      <div className='relative flex flex-col h-full text-text_black overflow-y-scroll scrollbar-custom border-b border-ipt_border ml-2'>
+      <div className='relative flex flex-col h-full bg-white text-text_black overflow-y-scroll scrollbar-custom border-b border-ipt_border ml-2 z-0'>
         <div className='sticky top-0 flex justify-between bg-white text-text_black font-800 border-b border-ipt_border pb-3'>
           <span className='w-1/5 text-center'>상품명</span>
           <span className='w-2/12 text-center'>상품금액</span>
@@ -153,7 +176,7 @@ const ContractInfoForm = ({ formType }) => {
         {contractInfo.contractProducts.map((product, idx) => (
           <div
             key={idx}
-            className='flex justify-between items-center py-3 border-b border-ipt_border text-sm  '>
+            className='flex justify-between items-center py-3 border-b border-ipt_border text-sm -z-10'>
             <p className='w-1/5 text-center'>{product.name}</p>
             <InputWeb
               id='price'
@@ -161,9 +184,8 @@ const ContractInfoForm = ({ formType }) => {
               type='text'
               classContainer='w-2/12 '
               classInput='text-center py-2'
-              value={product.price === 0 ? '' : product.price.toLocaleString()}
+              value={product.price.toLocaleString()}
               onChange={e => handleChangeValue(e, idx)}
-              maxLength={7}
             />
             <InputWeb
               id='quantity'
@@ -171,9 +193,8 @@ const ContractInfoForm = ({ formType }) => {
               type='text'
               classContainer='w-1/12'
               classInput='text-center py-2'
-              value={product.quantity === 0 ? '' : product.quantity.toLocaleString()}
+              value={product.quantity}
               onChange={e => handleChangeValue(e, idx)}
-              maxLength={1}
             />
             <p className='w-1/5 text-center'>
               {`${((product.price || 0) * (product.quantity || 0)).toLocaleString()} 원`}

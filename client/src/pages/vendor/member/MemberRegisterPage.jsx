@@ -55,7 +55,7 @@ const MemberRegisterPage = () => {
         <BasicInfoForm formType={'CREATE'} />
         <div className='absolute bottom-0 left-0 flex h-[65px] w-full justify-end px-7 pb-5 font-800 text-lg '>
           <button
-            className=' px-10 py-2 border border-mint rounded-lg text-mint'
+            className=' px-10 py-2 border border-mint rounded-lg text-mint hover:bg-mint_hover_light'
             onClick={() => navigate('/vendor/members')}>
             취소
           </button>

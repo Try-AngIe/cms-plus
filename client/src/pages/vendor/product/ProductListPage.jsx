@@ -56,8 +56,6 @@ const ProductListPage = () => {
           size: 10,
         });
         const transformdData = transformProductListItem(res.data.content);
-
-        console.log(transformdData);
         setProductList(transformdData);
         setFilteredListCount(res.data.totalCount);
         if (Object.keys(searchParams).length === 0) {
@@ -68,7 +66,7 @@ const ProductListPage = () => {
         console.error('axiosProductList => ', err);
       }
     },
-    [currentPage]
+    [currentPage, currentorder, currentorderBy]
   );
 
   // <--------데이터 변환-------->
@@ -138,6 +136,7 @@ const ProductListPage = () => {
     setModalTitle('상품 상세 정보');
     try {
       const res = await getProductDetail(productId);
+      console.log('상품상세 : ', res.data);
       setProductDetailData(res.data);
       setIsShowModal(true);
     } catch (err) {

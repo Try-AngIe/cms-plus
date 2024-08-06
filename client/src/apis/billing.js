@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { privateAxios, publicAxios } from '.';
 
 // 청구 생성
@@ -73,8 +74,17 @@ export const updateMemberBilling = async (memberId, billingData) => {
   return res;
 };
 
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+
 // 모바일 - 청구서 정보 조회
 export const getBillingInfo = async billingId => {
-  const res = await publicAxios.get(`/v1/vendor/billing/invoice/${billingId}`);
+  const mAxios = axios.create({
+    baseURL: BASE_URL,
+    headers: {
+      'Access-Control-Allow-Origin': `${BASE_URL}`,
+      'Content-Type': 'application/json',
+    },
+  });
+  const res = mAxios.get(`/v2/vendor/billing/invoice/${billingId}`);
   return res;
 };

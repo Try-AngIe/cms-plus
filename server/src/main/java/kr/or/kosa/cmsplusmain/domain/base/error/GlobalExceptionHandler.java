@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
+import jakarta.validation.ConstraintViolationException;
 import kr.or.kosa.cmsplusmain.domain.base.error.exception.BusinessException;
 import kr.or.kosa.cmsplusmain.domain.base.error.exception.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
@@ -36,6 +37,17 @@ public class GlobalExceptionHandler {
 	protected ResponseEntity<ErrorRes> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
 		log.error("handleMethodArgumentNotValidException", e);
 		final ErrorRes response = ErrorRes.of(ErrorCode.INVALID_INPUT_VALUE, e.getBindingResult());
+		return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+	}
+
+	/**
+	 * javax.validation.Valid or @Validated 으로 binding error 발생시 발생한다.
+	 * 주로 @RequestBody, @RequestPart 어노테이션에서 발생
+	 */
+	@ExceptionHandler(ConstraintViolationException.class)
+	protected ResponseEntity<ErrorRes> handleMethodArgumentNotValidException(ConstraintViolationException e) {
+		log.error("handleConstraintViolationException", e);
+		final ErrorRes response = ErrorRes.of(ErrorCode.INVALID_INPUT_VALUE);
 		return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 	}
 
@@ -91,6 +103,7 @@ public class GlobalExceptionHandler {
 
 	@ExceptionHandler(Exception.class)
 	protected ResponseEntity<ErrorRes> handleException(Exception e) {
+		log.error(e.getMessage(), e);
 		final ErrorRes response = ErrorRes.of(ErrorCode.INTERNAL_SERVER_ERROR);
 		return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 	}

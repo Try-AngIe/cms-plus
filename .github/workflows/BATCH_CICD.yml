@@ -13,7 +13,7 @@ env:
   ECS_CLUSTER: t3-back-ecscluster
   ECS_CONTAINER: t3-back-batchcontainer
   ECS_SERVICE: t3-back-ecscluster/t3-back-batchservice
-  ECS_TASK_DEFINITION: task-definition-batch.json
+  ECS_TASK_DEFINITION: infra/task-definition-batch.json
 
 permissions:
   contents: read

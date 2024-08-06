@@ -12,7 +12,8 @@ public class RecentFiveContractRes {
 	private final Long totalContractPrice;
 	private final int contractMonth;
 
-	public RecentFiveContractRes(Long contractId, LocalDate contractCreatedDate, String memberName, Long totalContractPrice, int contractMonth) {
+	public RecentFiveContractRes(Long contractId, LocalDate contractCreatedDate, String memberName,
+		Long totalContractPrice, int contractMonth) {
 		this.contractId = contractId;
 		this.contractCreatedDate = contractCreatedDate;
 		this.memberName = memberName;

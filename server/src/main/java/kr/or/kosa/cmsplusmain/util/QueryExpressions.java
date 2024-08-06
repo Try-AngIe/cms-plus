@@ -76,4 +76,10 @@ public class QueryExpressions {
     public static BooleanExpression memberEnrollDateEq(LocalDate memberEnrollDate) {
         return (memberEnrollDate != null) ? member.enrollDate.eq(memberEnrollDate) : null;
     }
+    public static BooleanExpression memberContractPriceLoe(Long contractPrice) {
+        return (contractPrice != null) ? member.contractPrice.loe(contractPrice) : null;
+    }
+    public static BooleanExpression memberContractCountLoe(Integer contractCount) {
+        return (contractCount != null) ? member.contractCount.loe(contractCount) : null;
+    }
 }

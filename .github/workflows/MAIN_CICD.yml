@@ -13,7 +13,7 @@ env:
   ECS_CLUSTER: t3-back-ecscluster
   ECS_CONTAINER: t3-back-maincontainer
   ECS_SERVICE: t3-back-ecscluster/t3-back-mainservice
-  ECS_TASK_DEFINITION: task-definition-main.json
+  ECS_TASK_DEFINITION: infra/task-definition-main.json
 
 permissions:
   contents: read

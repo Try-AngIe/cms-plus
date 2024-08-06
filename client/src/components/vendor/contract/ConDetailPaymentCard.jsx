@@ -2,9 +2,8 @@ import InputWeb from '@/components/common/inputs/InputWeb';
 
 const ConDetailPaymentCard = ({ contractData }) => {
   const paymentMethodInfo = contractData.paymentMethodInfo;
-  const paymentMethod = (paymentMethodInfo) ? paymentMethodInfo.paymentMethod : '';
-  const paymentMethodCode = (paymentMethod) ? paymentMethod.code : '';
-  console.log(paymentMethod);
+  const paymentMethod = paymentMethodInfo ? paymentMethodInfo.paymentMethod : '';
+  const paymentMethodCode = paymentMethod ? paymentMethod.code : '';
 
   return (
     <>
@@ -14,9 +13,10 @@ const ConDetailPaymentCard = ({ contractData }) => {
           label='결제수단'
           value={paymentMethod.title}
           type='text'
-          classContainer='w-full mr-6'
+          classContainer='w-full'
           disabled={true}
         />
+        <div className='flex items-start justify-center text-lg w-14 py-3' />
         <InputWeb
           id='cardNumber'
           label='카드번호'
@@ -32,9 +32,10 @@ const ConDetailPaymentCard = ({ contractData }) => {
           label='소유주명'
           value={paymentMethodInfo.cardOwner}
           type='text'
-          classContainer='w-full mr-3'
+          classContainer='w-full'
           disabled={true}
         />
+        <div className='flex items-start justify-center text-lg w-14 py-3' />
         <InputWeb
           id='accountOwnerBirth'
           label='생년월일'

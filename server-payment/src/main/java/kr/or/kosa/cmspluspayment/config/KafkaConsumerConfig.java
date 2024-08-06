@@ -23,6 +23,9 @@
      @Value("${kafkaGroup.paymentGroup}")
      private String paymentGroup;
 
+     @Value("${kafkaClient.paymentClient}")
+     private String paymentClient;
+
      // 결제데이터 메인서버에서 받음
      @Bean
      public ConcurrentKafkaListenerContainerFactory<String, PaymentDto> paymentKafkaListenerContainerFactory() {
@@ -43,6 +46,7 @@
          props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
          props.put(ConsumerConfig.GROUP_ID_CONFIG, paymentGroup);
          props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
+         props.put(ConsumerConfig.CLIENT_ID_CONFIG, paymentClient);
          props.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
          JsonDeserializer<PaymentDto> jsonDeserializer = new JsonDeserializer<>(PaymentDto.class, false);
          return new DefaultKafkaConsumerFactory<>(props, new StringDeserializer(), jsonDeserializer);

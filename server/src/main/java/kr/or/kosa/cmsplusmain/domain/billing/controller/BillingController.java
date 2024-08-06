@@ -25,6 +25,7 @@ import kr.or.kosa.cmsplusmain.domain.billing.dto.response.InvoiceRes;
 import kr.or.kosa.cmsplusmain.domain.billing.service.BillingService;
 import lombok.RequiredArgsConstructor;
 
+@Deprecated
 @RestController
 @RequestMapping("/api/v1/vendor/billing")
 @RequiredArgsConstructor
@@ -41,8 +42,8 @@ public class BillingController {
 	}
 
 	/**
-	* 청구서 발송
-	* */
+	 * 청구서 발송
+	 * */
 	@GetMapping("send-invoice/{billingId}")
 	public void sendInvoice(@VendorId Long vendorId, @PathVariable Long billingId) {
 		billingService.sendInvoice(vendorId, billingId);
@@ -57,16 +58,16 @@ public class BillingController {
 	}
 
 	/**
-	* 청구 실시간 결제
-	* */
+	 * 청구 실시간 결제
+	 * */
 	@GetMapping("payment/{billingId}")
 	public void payRealtimeBilling(@VendorId Long vendorId, @PathVariable Long billingId) {
 		billingService.payRealTimeBilling(vendorId, billingId);
 	}
 
 	/**
-	* 청구 결제 취소
-	* */
+	 * 청구 결제 취소
+	 * */
 	@GetMapping("payment/{billingId}/cancel")
 	public void cancelPay(@VendorId Long vendorId, @PathVariable Long billingId) {
 		billingService.cancelPayBilling(vendorId, billingId);
@@ -75,8 +76,10 @@ public class BillingController {
 	/**
 	 * 청구목록 조회
 	 * */
+
 	@GetMapping
-	public PageRes<BillingListItemRes> searchBillings(@VendorId Long vendorId, BillingSearchReq search, PageReq pageReq) {
+	public PageRes<BillingListItemRes> searchBillings(@VendorId Long vendorId, BillingSearchReq search,
+		PageReq pageReq) {
 		return billingService.searchBillings(vendorId, search, pageReq);
 	}
 
@@ -87,7 +90,6 @@ public class BillingController {
 	public BillingDetailRes getBillingDetail(@VendorId Long vendorId, @PathVariable Long billingId) {
 		return billingService.getBillingDetail(vendorId, billingId);
 	}
-
 
 	/**
 	 * 청구서 조회
@@ -106,16 +108,17 @@ public class BillingController {
 	}
 
 	/**
-	* 청구 수정
-	* */
+	 * 청구 수정
+	 * */
 	@PutMapping("/{billingId}")
-	public void updateBilling(@VendorId Long vendorId, @PathVariable Long billingId, @RequestBody @Valid BillingUpdateReq billingUpdateReq) {
+	public void updateBilling(@VendorId Long vendorId, @PathVariable Long billingId,
+		@RequestBody @Valid BillingUpdateReq billingUpdateReq) {
 		billingService.updateBilling(vendorId, billingId, billingUpdateReq);
 	}
 
 	/**
-	* 청구 삭제
-	* */
+	 * 청구 삭제
+	 * */
 	@DeleteMapping("/{billingId}")
 	public void deleteBilling(@VendorId Long vendorId, @PathVariable Long billingId) {
 		billingService.deleteBilling(vendorId, billingId);

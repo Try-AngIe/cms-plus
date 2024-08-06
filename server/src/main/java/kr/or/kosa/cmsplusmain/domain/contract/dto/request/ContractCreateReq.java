@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import kr.or.kosa.cmsplusmain.domain.base.validator.Day;
@@ -22,42 +23,43 @@ import lombok.Getter;
 @Builder
 public class ContractCreateReq {
 
-	@ContractName @NotNull
-	private String contractName;						// 계약명
+	@ContractName
+	@NotBlank
+	private String contractName;                        // 계약명
 
 	@NotNull
-	private LocalDate contractStartDate;				// 계약 시작일
+	private LocalDate contractStartDate;                // 계약 시작일
 
 	@NotNull
-	private LocalDate contractEndDate;					// 계약 종료일
+	private LocalDate contractEndDate;                    // 계약 종료일
 
 	@Day
 	@NotNull
-	private Integer contractDay;						// 계약 약정일
+	private Integer contractDay;                        // 계약 약정일
 
 	@NotNull
 	@Size(
 		min = Contract.MIN_CONTRACT_PRODUCT_NUMBER,
 		max = Contract.MAX_CONTRACT_PRODUCT_NUMBER,
 		message = "상품 수량은 " + Contract.MIN_CONTRACT_PRODUCT_NUMBER + "~" + Contract.MAX_CONTRACT_PRODUCT_NUMBER)
-	private List<@Valid ContractProductReq> contractProducts;	// 계약상품 목록
+	private List<@Valid ContractProductReq> contractProducts;    // 계약상품 목록
 
-    public Contract toEntity( Long vendorId, Member member, Payment payment) {
+	public Contract toEntity(Long vendorId, Member member, Payment payment) {
 		return Contract.builder()
-				.contractName(contractName)
-				.contractStartDate(contractStartDate)
-				.contractEndDate(contractEndDate)
-				.contractDay(contractDay)
-				.payment(payment)
-				.vendor(Vendor.of(vendorId))
-				.member(member)
-				.build();
+			.contractName(contractName)
+			.contractStartDate(contractStartDate)
+			.contractEndDate(contractEndDate)
+			.contractDay(contractDay)
+			.payment(payment)
+			.vendor(Vendor.of(vendorId))
+			.member(member)
+			.build();
 	}
 
 	public List<ContractProduct> toProductEntities(Contract contract, Map<Long, String> idToName) {
 		return contractProducts.stream()
-				.map(contractProduct -> contractProduct.toEntity(contract, idToName.get(contractProduct.getProductId())))
-				.collect(Collectors.toList());
+			.map(contractProduct -> contractProduct.toEntity(contract, idToName.get(contractProduct.getProductId())))
+			.collect(Collectors.toList());
 	}
 }
 

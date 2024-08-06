@@ -26,6 +26,10 @@ public class FormatUtil {
         return dateTime.format(formatter);
     }
 
+    public static String formatPhone(String phoneNumber) {
+        return phoneNumber != null ? phoneNumber.replaceAll("[^0-9]", "") : null;
+    }
+
     /**
      * 카드 번호 마스킹
      * 앞 6자리와 뒤 4자리를 제외한 나머지를 '*'로 마스킹하고 4자리마다 '-'를 추가

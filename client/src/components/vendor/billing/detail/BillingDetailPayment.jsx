@@ -1,10 +1,24 @@
 import InputWeb from '@/components/common/inputs/InputWeb';
 import { formatId } from '@/utils/format/formatId';
+import move from '@/assets/move.svg';
+import { useNavigate } from 'react-router-dom';
 
 const BillingDetailPayment = ({ contractId, paymentType, paymentMethod }) => {
+  const navigate = useNavigate();
+
   return (
     <>
-      <p className='text-text_black text-xl font-800'>결제정보</p>
+      <div className='flex items-center'>
+        <p className='text-text_black text-xl font-800'>결제정보</p>
+        <button>
+          <img
+            src={move}
+            alt='move'
+            className='h-[24px] ml-1 cursor-pointer'
+            onClick={() => navigate(`/vendor/contracts/detail/${contractId}`)}
+          />
+        </button>
+      </div>
       <div className='grid grid-cols-4 gap-6 my-8'>
         <InputWeb
           id='contractId'

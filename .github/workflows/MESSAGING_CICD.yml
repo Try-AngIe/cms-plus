@@ -13,7 +13,7 @@ env:
   ECS_CLUSTER: t3-back-ecscluster
   ECS_CONTAINER: t3-back-messagingcontainer
   ECS_SERVICE: t3-back-ecscluster/t3-back-messagingservice
-  ECS_TASK_DEFINITION: task-definition-messaging.json
+  ECS_TASK_DEFINITION: infra/task-definition-messaging.json
 
 permissions:
   contents: read

@@ -10,15 +10,15 @@ import lombok.Getter;
 
 @Getter
 public class BillingListItemRes {
-	private final Long billingId;
-	private final String memberName;
-	private final String memberPhone;
-	private final Long billingPrice;
-	private final BillingStatus billingStatus;
-	private final PaymentType paymentType;
-	private final LocalDate billingDate;
-	private final String firstProductName;
-	private final Integer totalProductCount;
+	private final Long billingId;                // 청구 ID
+	private final String memberName;            // 회원명
+	private final String memberPhone;            // 휴대전화
+	private final Long billingPrice;            // 청구금액
+	private final BillingStatus billingStatus;    // 청구상태
+	private final PaymentType paymentType;        // 결제방식
+	private final LocalDate billingDate;        // 결제일
+	private final String firstProductName;        // 목록에서 노출될 청구상품명
+	private final Integer totalProductCount;    // 전체 청구상품 개수
 
 	@QueryProjection
 	public BillingListItemRes(Long billingId, String memberName, String memberPhone, Long billingPrice,

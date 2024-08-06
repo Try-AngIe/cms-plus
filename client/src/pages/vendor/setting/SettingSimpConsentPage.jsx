@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import SimpConsentQrUrlModal from '@/components/vendor/modal/SimpConsentQrUrlModal';
 import ProductSelectField from '@/components/common/selects/ProductSelectField';
 import Checkbox from '@/components/common/inputs/CheckBox';
-import useSimpleConsentStore from '@/stores/simpleConsentStore';
 import { getSimpleConsent, updateSimpleConsent } from '@/apis/simpleConsent';
 import { getAllProductList } from '@/apis/product';
+import useAlert from '@/hooks/useAlert';
+import useSimpleConsentStore from '@/stores/useSimpleConsentStore';
 
 const MAX_VISIBLE_PRODUCTS = 5;
 
@@ -18,6 +19,8 @@ const SettingSimpConsentPage = () => {
 
   const { selectedProducts, setSelectedProducts, checkedItems, setCheckedItems } =
     useSimpleConsentStore();
+
+  const onAlert = useAlert();
 
   useEffect(() => {
     const fetchSimpleConsentAndProducts = async () => {
@@ -65,6 +68,8 @@ const SettingSimpConsentPage = () => {
 
     // 체크를 해제하려는 경우이고 현재 체크된 항목이 1개뿐이라면 변경하지 않음
     if (checkedItems[name] && checkedCount === 1) {
+      onAlert({ msg: '최소 한 개 이상의 수단이 등록되어야 합니다.', type: 'success' });
+      onAlert({ msg: '최소 한 개 이상의 수단이 등록되어야 합니다.', type: 'success' });
       return;
     }
 
@@ -123,7 +128,7 @@ const SettingSimpConsentPage = () => {
                       label: `${product.name}(${product.price.toLocaleString()}원)`,
                     }))}
                     selectedOptions={selectedProducts}
-                    className='h-13 w-64 rounded-md border border-gray-300 bg-white p-4 pr-10 text-base focus:border-teal-400 focus:outline-none focus:ring-teal-400'
+                    className='h-13 rounded-md border border-gray-300 bg-white p-4 pr-10 text-base focus:border-teal-400 focus:outline-none focus:ring-teal-400'
                   />
                 )}
                 <div

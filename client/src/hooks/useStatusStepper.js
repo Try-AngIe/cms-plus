@@ -3,17 +3,16 @@ import { useNavigate } from 'react-router-dom';
 import { useInvoiceStore } from '@/stores/useInvoiceStore';
 
 const CASES = {
-  BUYER: 'BUYER', // 납부자 청구서조회 페이지
-  CARD: 'CARD', // 납부자 카드 결제 페이지
-  ACCOUNT: 'ACCOUNT', // 납부자 계좌 결제 페이지
-  VIRTUAL: 'VIRTUAL', // 납부자 가상계좌 페이지
-  MEMBERREGISTER: 'MEMBERREGISTER', // 회원 등록 페이지
-  AUTO: 'AUTO', //자동결제
+  BUYER: 'BUYER', // 모바일 청구서조회
+  CARD: 'CARD', // 모바일 카드 결제
+  ACCOUNT: 'ACCOUNT', // 모바일 계좌 결제
+  VIRTUAL: 'VIRTUAL', // 모바일 가상계좌
+  AUTO: 'AUTO', //모바일 자동결제
+  MEMBERREGISTER: 'MEMBERREGISTER', // 회원 등록
 };
 
 const useStatusStepper = (type, start, end) => {
   const invoiceInfo = useInvoiceStore(state => state.invoiceInfo);
-
   const { status, increment, decrement, reset } = useStatusStore();
 
   const navigate = useNavigate();
@@ -69,7 +68,7 @@ const useStatusStepper = (type, start, end) => {
     if (status < end) {
       increment();
     }
-    if (status === end && type !== CASES.MEMBERREGISTER) {
+    if (status === end && !type === CASES.MEMBERREGISTER) {
       reset();
     }
 
@@ -86,12 +85,6 @@ const useStatusStepper = (type, start, end) => {
       case CASES.ACCOUNT:
         if (status === 2) navigate(`/member/invoice/${invoiceInfo.billingId}/payment/account`);
         break;
-      // case CASES.MEMBERREGISTER:
-      //   if (status === 3) {
-      //     reset();
-      //     navigate('/vendor/members');
-      //   }
-      //   break;
       default:
         break;
     }

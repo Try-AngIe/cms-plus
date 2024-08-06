@@ -22,7 +22,7 @@ const CheckVirtual = ({ invoiceInfo }) => {
       <div className='mb-4 space-y-2 border-b border-t py-3'>
         <InfoRow label='입금은행' value={invoiceInfo.paymentType.bank.title} />
         <InfoRow label='입금계좌' value={invoiceInfo.paymentType.accountNumber} />
-        <InfoRow label='예금주명' value='(주)야쿠르트' />
+        <InfoRow label='예금주명' value='효성학원' />
         <InfoRow label='결제금액' value={`${invoiceInfo.billingPrice.toLocaleString()}원`} />
         <InfoRow label='입금상태' value={getDepositStatus(invoiceInfo.billingStatus)} />
       </div>

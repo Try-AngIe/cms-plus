@@ -1,21 +1,13 @@
 import InputWeb from '@/components/common/inputs/InputWeb';
 import { useMemberPaymentStore } from '@/stores/useMemberPaymentStore';
-import {
-  formatCardMonthForDisplay,
-  formatCardNumber,
-  formatCardYearForDisplay,
-  unformatCardNumber,
-} from '@/utils/format/formatCard';
+import { formatCardNumber, unformatCardNumber } from '@/utils/format/formatCard';
 import InputCalendar from '@/components/common/inputs/InputCalendar';
 import FileUpload from '../../inputs/FileUpload';
 import { verifyCard } from '@/apis/validation';
 import { validateField } from '@/utils/validators';
 import useAlert from '@/hooks/useAlert';
-import { useState } from 'react';
 
 const CardMethodForm = ({ paymentMethod, formType }) => {
-  const [selectedFile, setSelectedFile] = useState(null);
-
   const {
     paymentMethodInfoReq_Card,
     setPaymentMethodInfoReq_Card,
@@ -25,27 +17,21 @@ const CardMethodForm = ({ paymentMethod, formType }) => {
 
   const onAlert = useAlert();
 
-   // <------ 인풋 필드 입력값 변경 ------>
+  // <------ 인풋 필드 입력값 변경 ------>
   const handleChangeInput = e => {
     const { id, value } = e.target;
     if (id === 'cardNumber') {
       const unformattedNumber = unformatCardNumber(value);
-      setPaymentMethodInfoReq_Card({ ...paymentMethodInfoReq_Card, [id]: unformattedNumber });
-    } else if (id === 'cardYear') {
-      setPaymentMethodInfoReq_Card({ ...paymentMethodInfoReq_Card, [id]: formatCardYearForDisplay(value) });
-    } else if (id === 'cardMonth') {
-      setPaymentMethodInfoReq_Card({ ...paymentMethodInfoReq_Card, [id]: formatCardMonthForDisplay(value) });
+      setPaymentMethodInfoReq_Card({ [id]: unformattedNumber });
     } else {
-      setPaymentMethodInfoReq_Card({ ...paymentMethodInfoReq_Card, [id]: value });
+      setPaymentMethodInfoReq_Card({ [id]: value });
     }
   };
 
-  const handleFileSelect = file => {
-    setSelectedFile(file);
-    setPaymentTypeInfoReq_Auto({
-      ...paymentTypeInfoReq_Auto,
-      consetImgName: file.name,
-    });
+  // <------ 파일 업로드 ------>
+  const handleUploadFile = file => {
+    setPaymentTypeInfoReq_Auto({ consentImgUrl: URL.createObjectURL(file) });
+    setPaymentTypeInfoReq_Auto({ consetImgName: file.name });
   };
 
   // <----- Card 인증 API ----->
@@ -57,6 +43,7 @@ const CardMethodForm = ({ paymentMethod, formType }) => {
         ...paymentCardinfo,
       };
       const res = await verifyCard(transformPaymentCard);
+      console.log('!---- Card 인증 ----!'); // 삭제예정
 
       if (res) {
         onAlert({
@@ -112,6 +99,7 @@ const CardMethodForm = ({ paymentMethod, formType }) => {
               classInput='py-3'
               value={paymentMethodInfoReq_Card.cardMonth}
               onChange={handleChangeInput}
+              maxLength={2}
               isValid={validateField('cardMonth', paymentMethodInfoReq_Card.cardMonth)}
               errorMsg='1월 ~ 12월'
             />
@@ -123,8 +111,13 @@ const CardMethodForm = ({ paymentMethod, formType }) => {
               classInput='py-3 '
               value={paymentMethodInfoReq_Card.cardYear}
               onChange={handleChangeInput}
+              maxLength={2}
+              isValid={validateField('cardYear', paymentMethodInfoReq_Card.cardYear)}
+              errorMsg='지난 년도입니다.'
             />
           </div>
+          {/* TODO */}
+          {/* 파일 삭제 버튼이 필요함 */}
           <div className='flex flex-1 items-end w-[50%]'>
             <InputWeb
               id='agreement'
@@ -136,7 +129,7 @@ const CardMethodForm = ({ paymentMethod, formType }) => {
               value={paymentTypeInfoReq_Auto.consetImgName}
               readOnly
             />
-            <FileUpload label='동의서 파일 선택' onFileSelect={handleFileSelect} />
+            <FileUpload label='동의서 파일 선택' onFileSelect={handleUploadFile} />
           </div>
         </div>
       </div>

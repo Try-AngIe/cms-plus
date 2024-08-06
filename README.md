@@ -1,1 +1,1 @@
-### https://www.hyosungcmsplus.site/vendor
+### https://www.hyosungcmsplus.site

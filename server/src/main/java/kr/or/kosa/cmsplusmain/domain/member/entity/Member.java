@@ -100,22 +100,6 @@ public class Member extends BaseEntity {
 	@Setter
 	private LocalDate enrollDate;
 
-	/************ 계약정보 ************/
-
-	/* 회원이 맺은 계약 목록 */
-	@OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
-	@SQLRestriction(BaseEntity.NON_DELETED_QUERY)
-	@Builder.Default
-	private List<Contract> contracts = new ArrayList<>();
-
-	@Comment("계약금액")
-	@Column(name = "member_contract_price", nullable = false)
-	private long contractPrice;
-
-	@Comment("계약수")
-	@Column(name = "member_contract_count", nullable = false)
-	private int contractCount;
-
 	/************ 청구정보 ************/
 
 	@Comment("회원 청구서 발송 수단")
@@ -138,15 +122,35 @@ public class Member extends BaseEntity {
 	@Builder.Default
 	private boolean autoBilling = true;
 
+
+	/************ 계약정보 ************/
+
+	/* 회원이 맺은 계약 목록 */
+	@OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+	@SQLRestriction(BaseEntity.NON_DELETED_QUERY)
+	@Builder.Default
+	private List<Contract> contracts = new ArrayList<>();
+
+	@Comment("계약금액 SUM(계약 상품 가격 * 수량) 미리 계산")
+	@Column(name = "member_contract_price", nullable = false)
+	private long contractPrice;
+
+	@Comment("계약수 수 미리 계산")
+	@Column(name = "member_contract_count", nullable = false)
+	private int contractCount;
+
+	/**
+	 * 회원 리스트 검색 조회 개선을 위해서 특정 필드를 미리 계산
+	 */
 	@PrePersist
 	@PreUpdate
-	private void calcContractPriceAndCnt() {
+	public void calcContractPriceAndCnt() {
 		this.contractPrice = totalContractPrice();
 		this.contractCount = getContractNum();
 	}
 
-	/*
-	 * 계약금액합
+	/**
+	 * 계약 금액 합
 	 * */
 	public Long totalContractPrice() {
 		return contracts.stream()
@@ -154,14 +158,14 @@ public class Member extends BaseEntity {
 				.sum();
 	}
 
-	/*
+	/**
 	 * 총 계약 수
 	 * */
 	public int getContractNum() {
 		return contracts.size();
 	}
 
-	/*
+	/**
 	 * 총 계약 수
 	 * 계약이 함께 삭제된다
 	 * */

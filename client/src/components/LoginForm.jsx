@@ -148,6 +148,7 @@ const LoginForm = () => {
           <span onClick={() => setIsShowPasswordModal(true)}>비밀번호 찾기</span>
         </div>
         <button
+          tabIndex='-1'
           className={`font-700 px-4 py-3 text-white rounded-lg transition-all duration-200
                     bg-mint hover:bg-mint_hover`}>
           {isLoading ? (

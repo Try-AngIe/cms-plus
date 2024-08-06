@@ -1,7 +1,5 @@
 package kr.or.kosa.cmsplusmain.domain.excel.dto;
 
-import java.util.List;
-
 import lombok.Builder;
 import lombok.Getter;
 

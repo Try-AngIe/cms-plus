@@ -23,7 +23,7 @@ const ConDetailContract = ({ contractData, updateAllInfo }) => {
         <p className='text-text_black text-xl font-800'>계약정보</p>
         <button
           className='flex justify-between items-center px-4 py-2 ml-4 text-mint
-            font-700 rounded-md border border-mint cursor-pointer'
+            font-700 rounded-md border border-mint cursor-pointer hover:bg-mint_hover_light'
           onClick={() => {
             handleButtonClick();
             updateAllInfo();
@@ -40,7 +40,7 @@ const ConDetailContract = ({ contractData, updateAllInfo }) => {
             총금액 : {contractPrice.toLocaleString()}원
           </p>
         </div>
-        <div className='mt-5'>
+        <div className='mt-5 overflow-y-auto scrollbar-custom'>
           {contractProducts.map((product, idx) => (
             <div
               key={idx}

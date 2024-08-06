@@ -76,7 +76,6 @@ const MemberExcelModal = ({ icon, isShowModal, setIsShowModal, modalTitle }) => 
         return;
       }
 
-      alert();
       onAlert({ msg: '회원 정보가 모두 성공적으로 등록되었습니다.', type: 'success' });
       setData([]);
       setErrors([]);
@@ -98,7 +97,7 @@ const MemberExcelModal = ({ icon, isShowModal, setIsShowModal, modalTitle }) => 
       height={'h-[90vh]'}
       width={'w-[95vw]'}
       close={true}>
-      <div className='bg-white rounded-lg w-full h-5/6 flex flex-col'>
+      <div className='bg-white rounded-lg w-full h-[92%] flex flex-col'>
         <div className='mb-6 flex items-center justify-between'>
           <div className='flex items-center flex-1'>
             <label

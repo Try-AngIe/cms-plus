@@ -131,7 +131,7 @@ const ProductModal = ({
       height='h-640'
       width='w-640'
       close={true}>
-      <div className='flex flex-col justify-between gap-1.5'>
+      <div className='relative flex flex-col h-full  gap-1.5'>
         <div className='mb-4 flex gap-4'>
           <div className='w-1/2'>
             <InputWeb
@@ -146,8 +146,8 @@ const ProductModal = ({
               onChange={e => setProductName(e.target.value)}
               classInput={
                 modalTitle === '상품 상세 정보'
-                  ? 'mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm placeholder-slate-400 shadow-sm placeholder:text-sm bg-ipt_disa cursor-default'
-                  : 'mt-1 w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm placeholder-slate-400 shadow-sm placeholder:text-sm focus:border-mint focus:outline-none focus:ring-1 focus:ring-mint sm:text-sm'
+                  ? 'mt-1 w-full rounded-md border border-slate-300 px-3 py-3 text-sm placeholder-slate-400 shadow-sm placeholder:text-sm bg-ipt_disa cursor-default'
+                  : 'mt-1 w-full rounded-md border border-slate-300 bg-white px-3 py-3 text-sm placeholder-slate-400 shadow-sm placeholder:text-sm focus:border-mint focus:outline-none focus:ring-1 focus:ring-mint sm:text-sm'
               }
               onMouseDown={modalTitle === '상품 상세 정보' ? e => e.preventDefault() : undefined}
             />
@@ -164,7 +164,7 @@ const ProductModal = ({
             value={productPrice}
             onChange={e => setProductPrice(e.target.value.replace(/\D/g, ''))}
             classContainer='w-1/2'
-            classInput='mt-1 w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm placeholder-slate-400 shadow-sm placeholder:text-sm focus:border-mint focus:outline-none focus:ring-1 focus:ring-mint sm:text-sm'
+            classInput='mt-1 w-full rounded-md border border-slate-300 bg-white px-3 py-3 text-sm placeholder-slate-400 shadow-sm placeholder:text-sm focus:border-mint focus:outline-none focus:ring-1 focus:ring-mint sm:text-sm'
           />
           <div className='w-1/2'>
             <InputWeb
@@ -175,7 +175,7 @@ const ProductModal = ({
               value={contractNumber}
               readOnly
               tabIndex='-1'
-              classInput='mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm placeholder-slate-400 shadow-sm placeholder:text-sm bg-ipt_disa cursor-default'
+              classInput='mt-1 w-full rounded-md border border-slate-300 px-3 py-3 text-sm placeholder-slate-400 shadow-sm placeholder:text-sm bg-ipt_disa cursor-default'
               onMouseDown={e => e.preventDefault()}
             />
           </div>
@@ -193,11 +193,11 @@ const ProductModal = ({
             className='mt-1 w-full h-60 rounded-md border border-slate-300 bg-white px-3 py-2 text-sm placeholder-slate-400 shadow-sm textarea:text-sm focus:border-mint focus:outline-none focus:ring-1 focus:ring-mint sm:text-sm resize-none'
           />
         </div>
-        <div className='flex justify-end gap-2 h-10'>
+        <div className='absolute bottom-0 right-0 flex justify-end gap-2 h-10 font-700'>
           {modalTitle === '상품 등록' ? (
             <>
               <button
-                className='bg-white text-mint border px-7 py-2 rounded-md hover:bg-mint hover:text-white h-10 w-50 border-mint transition-all duration-200'
+                className='bg-white text-mint border px-7 py-2 rounded-md hover:bg-mint_hover_light  h-10 w-50 border-mint transition-all duration-200'
                 onClick={() => setIsShowModal(false)}>
                 <span>취소</span>
               </button>
@@ -210,7 +210,7 @@ const ProductModal = ({
           ) : (
             <>
               <button
-                className='bg-white text-mint border border-mint px-7 py-2 rounded-md hover:bg-mint_hover hover:text-white h-10 w-50'
+                className='bg-white text-mint border border-mint px-7 py-2 rounded-md hover:bg-mint_hover h-10 w-50'
                 onClick={() => setIsShowModal(false)}>
                 <span>취소</span>
               </button>

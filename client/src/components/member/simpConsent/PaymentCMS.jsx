@@ -4,7 +4,7 @@ import SelectField from '@/components/common/selects/SelectField';
 import { verifyCMS } from '@/apis/validation';
 import { validateField } from '@/utils/validators';
 import { formatBirthDate } from '@/utils/format/formatBirth';
-import bankOptions from '@/utils/bank/bankOptions';
+import { bankOptions } from '@/utils/bank/bank';
 
 const PaymentCMS = ({
   paymentData,

@@ -135,7 +135,7 @@ const MemberListPage = () => {
 
   return (
     <div className='table-dashboard flex flex-col h-1500 extra_desktop:h-full '>
-      <div className='flex justify-between pt-2 pb-4 w-full'>
+      <div className='flex justify-between pt-2 pb-4 w-full '>
         <div className='flex items-center '>
           <div className='bg-mint h-7 w-7 rounded-md ml-1 mr-3 flex items-center justify-center'>
             <User fill='#ffffff' />

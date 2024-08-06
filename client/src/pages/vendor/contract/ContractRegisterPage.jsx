@@ -78,6 +78,7 @@ const ContractRegisterPage = () => {
           paymentCreateReq: transformPaymentInfo(), // 결제정보
           ...billingInfo, // 청구정보
         };
+
         // validation 체크
         if (!validateBasicInfo()) return;
         if (!validateContractInfo()) return;
@@ -89,13 +90,22 @@ const ContractRegisterPage = () => {
         if (isSimpConsentCheck && !paymentMethod && paymentType === 'AUTO') {
           await axiosSendReqSimpConsent(res.data);
         }
-
-        await navigate('/vendor/members');
-        onAlert({ msg: '회원정보가 등록되었습니다!', type: 'success' });
+        await navigate('/vendor/contracts');
+        onAlert({ msg: '회원의 계약이 등록되었습니다!', type: 'success' });
       }
     } catch (err) {
-      onAlert({ err });
+      // onAlert({ err });
       console.error('axiosCreateMember => ', err.response);
+    }
+  };
+
+  // <----- 간편서명동의 링크 발송하기 ----->
+  const axiosSendReqSimpConsent = async contractId => {
+    try {
+      const res = await sendReqSimpConsent(contractId);
+      console.log('!----간편서명동의 링크 발송하기 성공----!'); // 삭제예정
+    } catch (err) {
+      console.error('axiosSendReqSimpConsent => ', err.response);
     }
   };
 
@@ -104,11 +114,14 @@ const ContractRegisterPage = () => {
     try {
       if (status === 0 && type === 'new') {
         // validation 체크
-        if (!validateBasicInfo()) return;
-        setStatus(-1);
+        if (!validateBasicInfo()) {
+          return;
+        }
+
+        setStatus(0);
         const res = await getMemberCheck(basicInfo.memberPhone, basicInfo.memberEmail);
         console.log('!---- 회원 등록 여부 체크 성공----!'); // 삭제예정
-
+        setStatus(0);
         let message = '';
         const { phoneExist, emailExist } = res.data;
         if (phoneExist) {
@@ -134,16 +147,6 @@ const ContractRegisterPage = () => {
       }
     } catch (err) {
       console.error('axiosMemberCheck => ', err.response);
-    }
-  };
-
-  // <----- 간편서명동의 링크 발송하기 ----->
-  const axiosSendReqSimpConsent = async contractId => {
-    try {
-      const res = await sendReqSimpConsent(contractId);
-      console.log('!----간편서명동의 링크 발송하기 성공----!'); // 삭제예정
-    } catch (err) {
-      console.error('axiosSendReqSimpConsent => ', err.response);
     }
   };
 
@@ -211,7 +214,7 @@ const ContractRegisterPage = () => {
       isValidName && isValidPhone && isValidEmail && isValidEnrollDate && isValidHomePhone;
 
     if (!isSuccess) {
-      setStatus(-1);
+      setStatus(0);
       onAlert({ msg: '기본정보가 잘못 입력되었습니다.', type: 'error', title: '입력 정보 오류' });
     }
     return isSuccess;
@@ -220,13 +223,16 @@ const ContractRegisterPage = () => {
   // <----- 유효성 검사 : ContractInfo ----->
   const validateContractInfo = () => {
     const isValidContractName = validateField('contractName', contractInfo.contractName);
+
     const isValidContractProducts =
-      contractInfo.contractProducts.length >= 1 && contractInfo.contractProducts.length <= 10;
+      contractInfo.contractProducts.length >= 1 &&
+      contractInfo.contractProducts.length <= 10 &&
+      contractInfo.contractProducts.every(product => product.quantity && product.quantity > 0);
 
     const isSuccess = isValidContractName && isValidContractProducts;
 
     if (!isSuccess) {
-      setStatus(0);
+      setStatus(1);
       onAlert({ msg: '계약정보가 잘못 입력되었습니다.', type: 'error', title: '입력 정보 오류' });
     }
     return isSuccess;
@@ -245,12 +251,12 @@ const ContractRegisterPage = () => {
     let isSuccess = isValidStartDate && isValidEndDate && isValidContractDay;
 
     const paymentTypeInfoReq = data.paymentTypeInfoReq;
-    const paymentMethodInfoReq = data.paymentMethodInfoReq && data.paymentMethodInfoReq;
+    const paymentMethodInfoReq = data.paymentMethodInfoReq;
 
     // 자동결제 선택한 경우
     if (paymentTypeInfoReq.paymentType === 'AUTO') {
       // Cms 선택한 경우
-      if (paymentMethodInfoReq.paymentMethod === 'CMS') {
+      if (paymentMethodInfoReq && paymentMethodInfoReq.paymentMethod === 'CMS') {
         const isValidBank = paymentMethodInfoReq.bank !== '';
         const isValidAccountNumber = validateField(
           'accountNumber',
@@ -267,7 +273,7 @@ const ContractRegisterPage = () => {
           isValidAccountOwnerBirth;
       }
       // Card 선택한 경우
-      else if (paymentMethodInfoReq.paymentMethod === 'CARD') {
+      else if (paymentMethodInfoReq && paymentMethodInfoReq.paymentMethod === 'CARD') {
         const isValidCardNumber = validateField('cardNumber', paymentMethodInfoReq.cardNumber);
         const isValidCardMonth = validateField('cardMonth', paymentMethodInfoReq.cardMonth);
         const isValidCardYear = paymentMethodInfoReq.cardYear !== '';
@@ -290,11 +296,25 @@ const ContractRegisterPage = () => {
     }
 
     if (!isSuccess) {
-      setStatus(1);
+      setStatus(2);
       onAlert({ msg: '결제정보가 잘못 입력되었습니다.', type: 'error', title: '입력 정보 오류' });
     }
     return isSuccess;
   };
+
+  useEffect(() => {
+    const handleBeforeUnload = event => {
+      event.preventDefault();
+      event.returnValue = '';
+      reset();
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, []);
 
   // <----- 페이지 이탈 시 Status reset ----->
   useEffect(() => {
@@ -340,9 +360,9 @@ const ContractRegisterPage = () => {
           />
           <NextButton
             onClick={() => {
+              handleClickNext();
               axiosCreateMember();
               axiosMemberCheck();
-              handleClickNext();
             }}
             status={status}
             type={'memberRegister'}

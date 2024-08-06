@@ -31,7 +31,7 @@ export const sendSimpleConsentSignImage = async (vendorId, data) => {
 
 /* 간편서명동의 설정 업데이트 */
 export const updateSimpleConsent = async data => {
-  const res = await publicAxios.put('/v1/vendor/simple-consent', data);
+  const res = await privateAxios.put('/v1/vendor/simple-consent', data);
   return res.data;
 };
 

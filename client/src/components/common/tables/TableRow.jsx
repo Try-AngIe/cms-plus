@@ -4,6 +4,7 @@ const TableRow = ({
   index,
   row,
   cols,
+  size = 'h-[8.8%]',
   currentPage,
   selection,
   handleClickCheckBox,
@@ -47,9 +48,9 @@ const TableRow = ({
 
   return (
     <tr
-      className={`text-text_black hover:bg-ipt_disa cursor-pointer flex items-center border-b border-ipt_border 
-        ${selection.includes(row) && 'bg'}
-      `}>
+      className={`${size} text-text_black hover:bg-ipt_disa cursor-pointer flex items-center border-b border-ipt_border 
+        ${selection.includes(row) && 'bg'}`}
+      onClick={() => onRowClick(row)}>
       <td className='w-16 flex justify-center'>
         <Checkbox
           classBox='h-4 w-4 rounded-sm '
@@ -62,9 +63,8 @@ const TableRow = ({
       {cols.map((col, idx) => (
         <td
           key={idx}
-          onClick={() => onRowClick(row)}
           className={` ${col.key === 'order' ? 'w-16' : `${col.width}`} 
-                    py-4  text-sm font-700 flex justify-center`}>
+                    text-sm font-700 flex justify-center`}>
           {col.key !== 'order'
             ? highlightSearchTerm(row[col.key], searchConditions, col.key)
             : index + 1 + (currentPage - 1) * 10}

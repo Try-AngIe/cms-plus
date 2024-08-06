@@ -18,7 +18,7 @@ const ConDetailPayment = ({ contractData, updateAllInfo }) => {
         <p className='text-text_black text-xl font-800'>결제정보</p>
         <button
           className='flex justify-between items-center px-4 py-2 ml-4 text-mint
-            font-700 rounded-md border border-mint cursor-pointer'
+            font-700 rounded-md border border-mint cursor-pointer hover:bg-mint_hover_light'
           onClick={() => {
             handleButtonClick();
             updateAllInfo();

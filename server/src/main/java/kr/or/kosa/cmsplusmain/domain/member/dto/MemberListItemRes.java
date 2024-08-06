@@ -21,6 +21,18 @@ public class MemberListItemRes {
     private final Long contractPrice;         // 총 계약 금액
     private final Integer contractCount;      // 계약 개수
 
+    @QueryProjection
+    public MemberListItemRes(Long memberId, String memberName, String memberPhone, String memberEmail,
+                             LocalDate memberEnrollDate, Long contractPrice, Integer contractCount) {
+        this.memberId = memberId;
+        this.memberName = memberName;
+        this.memberPhone = memberPhone;
+        this.memberEmail = memberEmail;
+        this.memberEnrollDate = memberEnrollDate;
+        this.contractPrice = contractPrice;
+        this.contractCount = contractCount;
+    }
+
     public static MemberListItemRes fromEntity(Member member){
         return MemberListItemRes.builder()
                 .memberId(member.getId())
@@ -31,16 +43,5 @@ public class MemberListItemRes {
                 .contractPrice(member.totalContractPrice())
                 .contractCount(member.getContractNum())
                 .build();
-    }
-
-    @QueryProjection
-    public MemberListItemRes(Long memberId, String memberName, String memberPhone, String memberEmail, LocalDate memberEnrollDate, Long contractPrice, Integer contractCount) {
-        this.memberId = memberId;
-        this.memberName = memberName;
-        this.memberPhone = memberPhone;
-        this.memberEmail = memberEmail;
-        this.memberEnrollDate = memberEnrollDate;
-        this.contractPrice = contractPrice;
-        this.contractCount = contractCount;
     }
 }

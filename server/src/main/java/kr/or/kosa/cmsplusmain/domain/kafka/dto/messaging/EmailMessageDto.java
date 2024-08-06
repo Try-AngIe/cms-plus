@@ -8,7 +8,7 @@ import lombok.ToString;
 
 @Getter
 @Setter
-@ToString
+@ToString(callSuper = true)
 public class EmailMessageDto extends MessageDto {
 
     @NotNull
@@ -20,3 +20,7 @@ public class EmailMessageDto extends MessageDto {
     }
 
 }
+
+
+
+

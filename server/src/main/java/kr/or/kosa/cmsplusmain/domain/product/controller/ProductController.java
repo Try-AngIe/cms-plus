@@ -2,6 +2,7 @@ package kr.or.kosa.cmsplusmain.domain.product.controller;
 
 import java.util.List;
 
+import kr.or.kosa.cmsplusmain.LogExecutionTime;
 import kr.or.kosa.cmsplusmain.domain.base.dto.PageReq;
 import kr.or.kosa.cmsplusmain.domain.base.dto.PageRes;
 import kr.or.kosa.cmsplusmain.domain.base.security.VendorId;
@@ -21,42 +22,52 @@ public class ProductController {
 
     private final ProductService productService;
 
+    /**
+     * 상품 등록
+     * */
     @PostMapping
     public void createProduct(@VendorId Long vendorId, @RequestBody ProductCreateReq product) {
-//        Long vendorId = 1L;
         productService.createProduct(vendorId, product);
     }
 
-    @GetMapping("/{productId}")
-    public ProductDetailRes getProduct(@VendorId Long vendorId, @PathVariable("productId") Long productId) {
-//        Long vendorId = 1L; // 고객1 더미데이터
-        return productService.getProductDetail(productId, vendorId);
-    }
-
-    /*
-    * 고객의 전체 상품 목록 (조건 없이, 이름과 수량 그리고 ID 만)
-    * */
-    @GetMapping("/all")
-    public List<ProductDto> getAllProducts(@VendorId Long vendorId) {
-//        Long vendorId = 1L;
-        return productService.getAllProducts(vendorId);
-    }
+    /**
+     * 상품 목록 전체 조회 (검색 조건, 정렬 조건)
+     * */
 
     @GetMapping
     public PageRes<ProductListItemRes> getProductListItem(@VendorId Long vendorId, ProductSearchReq search, PageReq pageable) { // 검색 및 필터링 조건DTO, 페이지네이션DTO
-//        Long vendorId = 1L;
         return productService.searchProducts(vendorId, search, pageable);
     }
 
+    /**
+     * 상품 상세 조회
+     * */
+    @GetMapping("/{productId}")
+    public ProductDetailRes getProduct(@VendorId Long vendorId, @PathVariable("productId") Long productId) {
+        return productService.getProductDetail(productId, vendorId);
+    }
+
+    /**
+     * 상품 수정
+     * */
     @PutMapping("/{productId}")
     public void updateProduct(@VendorId Long vendorId, @PathVariable("productId") Long productId, @RequestBody ProductUpdateReq productUpdateReq) {
-//        Long vendorId = 1L;
         productService.updateProduct(vendorId, productId, productUpdateReq);
     }
 
+    /**
+     * 상품 삭제
+     * */
     @DeleteMapping("/{productId}")
     public void deleteProduct(@VendorId Long vendorId, @PathVariable("productId") Long productId) {
-//        Long vendorId = 1L;
         productService.deleteProduct(vendorId, productId);
+    }
+
+    /**
+    * 전체 상품 목록 (조건 없이, 이름과 수량 그리고 ID 만)
+    * */
+    @GetMapping("/all")
+    public List<ProductDto> getAllProducts(@VendorId Long vendorId) {
+        return productService.getAllProducts(vendorId);
     }
 }

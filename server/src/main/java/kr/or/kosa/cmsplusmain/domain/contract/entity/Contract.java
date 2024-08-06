@@ -21,7 +21,6 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import kr.or.kosa.cmsplusmain.domain.base.entity.BaseEntity;
@@ -78,7 +77,8 @@ public class Contract extends BaseEntity {
 
 	@Comment("계약 약정일")
 	@Column(name = "contract_day", nullable = false)
-	@Day @NotNull
+	@Day
+	@NotNull
 	@Setter
 	private Integer contractDay;
 
@@ -126,6 +126,15 @@ public class Contract extends BaseEntity {
 	@Builder.Default
 	private List<Billing> billings = new ArrayList<>();
 
+	/**
+	 * id만 들고있는 빈 객체
+	 * */
+	public static Contract of(Long contractId) {
+		Contract contract = new Contract();
+		contract.id = contractId;
+		return contract;
+	}
+
 	@PrePersist
 	public void calculateContractPriceAndProductCnt() {
 		this.contractPrice = contractProducts.stream()
@@ -156,11 +165,9 @@ public class Contract extends BaseEntity {
 	}
 
 	/**
-	* 계약 삭제
-	* 계약상품도 같이 삭제된다
-	* 청구도 같이 삭제된다
-	* 결제도 같이 삭제된다
-	* */
+	 * 계약 삭제
+	 * 계약상품, 청구, 결제도 동시 삭제됨
+	 * */
 	@Override
 	public void delete() {
 		super.delete();
@@ -170,19 +177,10 @@ public class Contract extends BaseEntity {
 	}
 
 	/**
-	* 계약 활성화 여부
-	* */
+	 * 계약 활성화 여부
+	 * */
 	public boolean isEnabled() {
 		LocalDate curDate = LocalDate.now();
 		return curDate.isBefore(contractEndDate);
-	}
-
-	/**
-	 * id만 들고있는 빈 객체
-	 * */
-	public static Contract of(Long contractId) {
-		Contract contract = new Contract();
-		contract.id = contractId;
-		return contract;
 	}
 }

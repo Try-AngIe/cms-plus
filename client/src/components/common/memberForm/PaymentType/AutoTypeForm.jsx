@@ -12,11 +12,19 @@ const PaymentMethod = [
 
 // formType : CREATE, UPDATE
 const AutoTypeForm = ({ paymentType, formType }) => {
-  const { paymentMethod, setPaymentMethod } = useMemberPaymentStore();
+  const { paymentMethod, setPaymentMethod, setIsSimpConsentCheck, setPaymentTypeInfoReq_Auto } =
+    useMemberPaymentStore();
 
   // <----- Radio paymentMethod 변경 ----->
   const handleChangeValue = value => {
     setPaymentMethod(value);
+    if (value === '') {
+      const currentTime = new Date().toISOString();
+      setIsSimpConsentCheck(false);
+      setPaymentTypeInfoReq_Auto({ simpleConsentReqDateTime: currentTime });
+    } else {
+      setPaymentTypeInfoReq_Auto({ simpleConsentReqDateTime: '' });
+    }
   };
 
   // <----- 결제수단에 따른 폼 생성 ----->

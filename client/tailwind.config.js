@@ -12,6 +12,7 @@ export default {
       colors: {
         mint: '#4FD1C5', // 메인컬러
         mint_hover: '#51B1A8', // 메인컬러 호버
+        mint_hover_light: '#C1F3EF', // 하얀버튼 호버
         background: '#F8F9FA', // 배경컬러
         text_black: '#344767', // 텍스트 메인컬러
         text_grey: '#7B809A', // 텍스트 서브컬러

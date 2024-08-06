@@ -74,9 +74,10 @@ const ConDetailBillingList = () => {
   }, [currentPage]);
 
   return (
-    <div className='h-640 flex flex-col mb-5  pb-3'>
-      <div className='flex flex-col h-full justify-between pt-5 px-5 '>
+    <div className='h-480 flex flex-col '>
+      <div className='h-full flex flex-col justify-between pt-2 px-5'>
         <Table
+          size='h-[12.4%]'
           cols={cols}
           rows={billingList}
           currentPage={currentPage}

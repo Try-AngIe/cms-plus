@@ -18,15 +18,12 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public class BillingDetailRes {
-
 	private final MemberDto member;
 	private final BillingDto billing;
-
-	private final Long contractId;							// 계약 ID
-	private final PaymentType paymentType;					// 결제방식
-	private final PaymentMethod paymentMethod;				// 결제수단
-
-	private final Map<BillingState.Field, BillingState> fieldToState;		// 동작 별 가능 상태 및 이유
+	private final Long contractId;                            // 계약 ID
+	private final PaymentType paymentType;                    // 결제방식
+	private final PaymentMethod paymentMethod;                // 결제수단
+	private final Map<BillingState.Field, BillingState> fieldToState;        // 동작 별 가능 상태 및 이유
 
 	public static BillingDetailRes fromEntity(Billing mBilling) {
 		final Contract contract = mBilling.getContract();
@@ -43,7 +40,8 @@ public class BillingDetailRes {
 	}
 
 	/**
-	 * 청구의 여러 동작 별 가능 여부와 불가능하다면 그 이유를 담아서 보내주기 위한 생성자
+	 * 청구 상세 페이지
+	 * 청구의 여러 버튼 별 가능 여부와 불가능하다면 그 이유를 담아서 보내준다.
 	 * */
 	public static BillingDetailRes fromEntity(Billing mBilling, Map<BillingState.Field, BillingState> fieldToState) {
 		final Contract contract = mBilling.getContract();

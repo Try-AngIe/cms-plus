@@ -1,6 +1,8 @@
 package kr.or.kosa.cmsplusmain.domain.payment.service;
 
 import jakarta.persistence.EntityNotFoundException;
+import kr.or.kosa.cmsplusmain.domain.payment.dto.PaymentBankRes;
+import kr.or.kosa.cmsplusmain.domain.payment.entity.Bank;
 import kr.or.kosa.cmsplusmain.util.HibernateUtils;
 import kr.or.kosa.cmsplusmain.util.RandomNumberGenerator;
 import kr.or.kosa.cmsplusmain.domain.contract.entity.Contract;
@@ -29,6 +31,11 @@ import kr.or.kosa.cmsplusmain.domain.payment.entity.method.CmsPaymentMethod;
 import kr.or.kosa.cmsplusmain.domain.payment.entity.method.PaymentMethodInfo;
 
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Service
@@ -201,6 +208,17 @@ public class PaymentService {
 	}
 
 	/*
+	 * 은행 정보 불러오기
+	 * */
+	public List<PaymentBankRes> getAllBanks() {
+		List<PaymentBankRes> bankList = new ArrayList<>();
+		for (Bank bank : Bank.values()) {
+			bankList.add(new PaymentBankRes(bank.getCode(), bank.getTitle(), bank.name()));
+		}
+		return bankList;
+	}
+
+	/*
 	 * 결제 방식 등록 ( 자동결제, 납부자결제, 가상계좌 )
 	 * */
 	private PaymentTypeInfo createPaymentTypeInfo(PaymentTypeInfoReq paymentTypeInfoReq) {
@@ -222,7 +240,7 @@ public class PaymentService {
 		else if(paymentTypeInfoReq instanceof VirtualAccountTypeReq virtualAccountTypeReq){
 
 			// 가상계좌 14자리 랜덤으로 생성
-			String accountNumber = RandomNumberGenerator.generateRandomNumber(14);
+			String accountNumber = RandomNumberGenerator.generateRandomNumber(14, PaymentType.VIRTUAL);
 
 			// 가상계좌 DB에 저장
 			VirtualAccountPaymentType virtualAccountPaymentType =  virtualAccountTypeReq.toEntity(accountNumber);
@@ -261,5 +279,6 @@ public class PaymentService {
 			throw new EntityNotFoundException("결제 ID 없음("+paymentId + ")");
 		}
 	}
+
 
 }

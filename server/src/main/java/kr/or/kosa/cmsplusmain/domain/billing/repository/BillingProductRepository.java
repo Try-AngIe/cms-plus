@@ -5,6 +5,7 @@ import org.springframework.stereotype.Repository;
 import kr.or.kosa.cmsplusmain.domain.base.repository.BaseRepository;
 import kr.or.kosa.cmsplusmain.domain.billing.entity.BillingProduct;
 
+@Deprecated
 @Repository
 public interface BillingProductRepository extends BaseRepository<BillingProduct, Long> {
 }

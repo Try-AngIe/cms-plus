@@ -1,13 +1,9 @@
-import { useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCalendar } from '@fortawesome/free-solid-svg-icons';
-import DatePicker from '@/components/common/inputs/DatePicker';
 import InputWeb from '@/components/common/inputs/InputWeb';
 import TextArea from '@/components/common/inputs/TextArea';
 import dayjs from 'dayjs';
-import { formatDate } from '@/utils/format/formatDate';
 import { formatId } from '@/utils/format/formatId';
 import InputCalendar from '@/components/common/inputs/InputCalendar';
+import { disabledStartDate } from '@/utils/format/formatCalender';
 
 const BillingDetailBilling = ({
   billingData,
@@ -85,6 +81,7 @@ const BillingDetailBilling = ({
           id='billingDate'
           label='결제일'
           value={billingReq.billingDate}
+          disabledDate={disabledStartDate}
           handleChangeValue={e => onBillingDateChange(e.target.value)}
           placeholder='결제일'
           width='100%'

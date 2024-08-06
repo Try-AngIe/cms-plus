@@ -16,15 +16,6 @@ export const useMemberPaymentStore = create(set => ({
       paymentType: 'AUTO',
     }),
 
-  // <----- 간편성명동의 체크여부 ----->
-  isSimpConsentCheck: 'true',
-
-  // boolean 값 변경
-  setIsSimpConsentCheck: data =>
-    set({
-      isSimpConsentCheck: !data,
-    }),
-
   // <----- 결제 방식 - 가상계좌 ----->
   paymentTypeInfoReq_Virtual: {
     bank: '',
@@ -168,5 +159,14 @@ export const useMemberPaymentStore = create(set => ({
         cardOwner: '',
         cardOwnerBirth: '',
       },
+    }),
+
+  // <----- 간편성명동의 체크여부 ----->
+  isSimpConsentCheck: 'true',
+
+  // boolean 값 변경
+  setIsSimpConsentCheck: data =>
+    set({
+      isSimpConsentCheck: !data,
     }),
 }));

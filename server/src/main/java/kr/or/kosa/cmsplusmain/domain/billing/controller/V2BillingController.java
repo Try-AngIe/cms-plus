@@ -21,12 +21,15 @@ import kr.or.kosa.cmsplusmain.domain.billing.dto.request.BillingUpdateReq;
 import kr.or.kosa.cmsplusmain.domain.billing.dto.response.BillingDetailRes;
 import kr.or.kosa.cmsplusmain.domain.billing.dto.response.BillingListItemRes;
 import kr.or.kosa.cmsplusmain.domain.billing.dto.response.BillingProductRes;
+import kr.or.kosa.cmsplusmain.domain.billing.dto.response.InvoiceRes;
 import kr.or.kosa.cmsplusmain.domain.billing.service.V2BillingService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/api/v2/vendor/billing")
 @RequiredArgsConstructor
+@Slf4j
 public class V2BillingController {
 
 	private final V2BillingService billingService;
@@ -43,7 +46,8 @@ public class V2BillingController {
 	 * 청구목록 조회
 	 * */
 	@GetMapping
-	public PageRes<BillingListItemRes> searchBillings(@VendorId Long vendorId, BillingSearchReq search, PageReq pageReq) {
+	public PageRes<BillingListItemRes> searchBillings(@VendorId Long vendorId, BillingSearchReq search,
+		PageReq pageReq) {
 		return billingService.searchBillings(vendorId, search, pageReq);
 	}
 
@@ -63,12 +67,21 @@ public class V2BillingController {
 		return billingService.getBillingProducts(vendorId, billingId);
 	}
 
+	/**
+	 * 청구서 조회
+	 * */
+	@GetMapping("/invoice/{billingId}")
+	public InvoiceRes getInvoice(@PathVariable Long billingId) {
+		log.info("invoice " + billingId);
+		return billingService.getInvoice(billingId);
+	}
 
 	/**
 	 * 청구 수정
 	 * */
 	@PutMapping("/{billingId}")
-	public void updateBilling(@VendorId Long vendorId, @PathVariable Long billingId, @RequestBody @Valid BillingUpdateReq billingUpdateReq) {
+	public void updateBilling(@VendorId Long vendorId, @PathVariable Long billingId,
+		@RequestBody @Valid BillingUpdateReq billingUpdateReq) {
 		billingService.updateBilling(vendorId, billingId, billingUpdateReq);
 	}
 

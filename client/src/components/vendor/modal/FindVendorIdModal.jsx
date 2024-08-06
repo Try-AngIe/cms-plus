@@ -70,9 +70,13 @@ const FindVendorIdModal = ({
     try {
       const res = await postFindIdentifier(vendorIdFormData);
       console.log('!----아이디 찾기 요청 성공----!'); // 삭제예정
-      await setFindedId(res.data.username);
-      setIsShowSuccessFindIdModal(true);
-      setIsShowModal(false);
+      if (res.data) {
+        await setFindedId(res.data.username);
+        setIsShowSuccessFindIdModal(true);
+        setIsShowModal(false);
+      } else {
+        setIsAuthentication(false);
+      }
     } catch (err) {
       setIsAuthentication(false);
       console.error('axiosFindIdentifier => ', err.response);
@@ -172,7 +176,8 @@ const FindVendorIdModal = ({
             />
           )}
           <button
-            className={`ml-3 w-3/12 disabled: text-white text-base font-700 h-54 rounded-lg 
+            tabIndex='-1'
+            className={`ml-3 w-3/12 disabled: text-white text-base font-700 h-54 rounded-lg focus:outline-none
               ${
                 (vendorIdFormData.phone || vendorIdFormData.email) &&
                 (vendorIdFormData.phone?.length > 0 || vendorIdFormData.email?.length > 0)
@@ -195,7 +200,7 @@ const FindVendorIdModal = ({
           onChange={handleChangeValue}
           onKeyDown={handleKeyDown}
           isValid={isAuthentication}
-          errorMsg='인증번호가 틀립니다.'
+          errorMsg='인증번호가 틀렸습니다.'
           maxLength={6}
         />
         <button
@@ -205,7 +210,7 @@ const FindVendorIdModal = ({
           className={`font-700 px-4 py-3 text-white rounded-lg transition-all duration-200 ${
             (vendorIdFormData.method === 'SMS' && isValidateSmsForm()) ||
             (vendorIdFormData.method === 'EMAIL' && isValidateEmailForm())
-              ? 'hover:bg-mint_hover bg-mint '
+              ? 'hover:bg-mint_hover bg-mint curson-pointer'
               : 'bg-btn_disa'
           }`}
           onClick={axiosFindIdentifier}>

@@ -7,7 +7,7 @@ import ConDetailPayment from '@/components/vendor/contract/ConDetailPayment';
 import { useMemberBillingStore } from '@/stores/useMemberBillingStore';
 import { useMemberContractStore } from '@/stores/useMemberContractStore';
 import { useMemberPaymentStore } from '@/stores/useMemberPaymentStore';
-import bankCode from '@/utils/bank/bankCode';
+import { bankCode } from '@/utils/bank/bank';
 import { formatCardYearForDisplay } from '@/utils/format/formatCard';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
@@ -56,6 +56,10 @@ const ContractDetailPage = () => {
       console.log('!----계약 상세 조회 성공----!', res);
       setContractData(res.data);
       setLoading(false);
+
+      console.log('계약상세 : ', res.data);
+
+      console.log(res.data);
     } catch (err) {
       console.log('effect');
       console.error('axiosContrctDetail => ', err.response.data);
@@ -117,7 +121,7 @@ const ContractDetailPage = () => {
       if (data.paymentMethod.code === 'CMS') {
         setPaymentMethodInfoReq_Cms({
           bank: bankCode[data.bank.code],
-          accountNumber: data.accountNumber,
+          accountNumber: '',
           accountOwner: data.accountOwner,
           accountOwnerBirth: data.accountOwnerBirth,
         });
@@ -125,7 +129,7 @@ const ContractDetailPage = () => {
 
       if (data.paymentMethod.code === 'CARD') {
         setPaymentMethodInfoReq_Card({
-          cardNumber: data.cardNumber,
+          cardNumber: '',
           cardMonth: data.cardMonth,
           cardYear: formatCardYearForDisplay(data.cardYear),
           cardOwner: data.cardOwner,

@@ -42,13 +42,13 @@ public class ExcelHandler<T> {
 		Sheet sheet = workbook.getSheetAt(0); // 첫 번째 시트를 가져옴
 
 		// 헤더 정보 추출
-		Row headerRow = sheet.getRow(3);
+		Row headerRow = sheet.getRow(3);    // 예시 입력 스킵
 		List<String> headers = StreamSupport.stream(headerRow.spliterator(), false)
 			.map(Cell::getStringCellValue)
 			.collect(Collectors.toList());
 
 		List<T> dataList = StreamSupport.stream(sheet.spliterator(), false)
-			.skip(4) // 첫 번째 행은 헤더
+			.skip(4) // 4 번째 행은 헤더
 			.filter(this::isRowNotEmpty) // 빈 행이 아닌 경우
 			.map(row -> mapRowToDto(row, clazz, headers))
 			.collect(Collectors.toList());
@@ -69,7 +69,7 @@ public class ExcelHandler<T> {
 	}
 
 	private T mapRowToDto(Row row, Class<T> clazz, List<String> headers) {
-		T dataDTO = null;
+		T dataDTO;
 		try {
 			dataDTO = clazz.getDeclaredConstructor().newInstance();
 

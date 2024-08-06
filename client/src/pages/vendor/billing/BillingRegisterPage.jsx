@@ -21,7 +21,7 @@ const BillingRegisterPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageGroup, setPageGroup] = useState(0);
   const [selectedContract, setSelectedContract] = useState(null);
-  const debouncedSearchTerm = useDebounce(searchTerm, 500);
+  const debouncedSearchTerm = useDebounce(searchTerm, 300);
 
   const [products, setProducts] = useState([]); // 전체 상품 목록
 
@@ -40,7 +40,7 @@ const BillingRegisterPage = () => {
     async (page = currentPage) => {
       try {
         const res = await getContractList({
-          [searchType]: searchTerm,
+          [searchType]: debouncedSearchTerm,
           page,
           size: 10,
         });
@@ -50,7 +50,7 @@ const BillingRegisterPage = () => {
         console.error('청구 생성 - 계약 목록 조회 실패', err);
       }
     },
-    [searchType, searchTerm, currentPage]
+    [searchType, debouncedSearchTerm, currentPage]
   );
 
   const fetchContractProducts = useCallback(async contractId => {
@@ -104,12 +104,11 @@ const BillingRegisterPage = () => {
       billingDate.setMonth(billingDate.getMonth() + 1);
     }
 
-    return billingDate.toISOString().split('T')[0];
+    return billingDate.toLocaleDateString('en-CA');
   };
 
   const handleSelectContract = async contract => {
     const contractProducts = await fetchContractProducts(contract.contractId);
-    console.log('contractProducts', contractProducts);
     setBillingData(prev => ({
       ...prev,
       contractId: contract.contractId,
@@ -120,12 +119,18 @@ const BillingRegisterPage = () => {
   };
 
   const handleBillingDataChange = (key, value) => {
+    if (key !== 'billingDate' && billingData.products.length >= 10) {
+      onAlert({ msg: ' 청구는 최대 10 개의 상품을 지녀야합니다.', type: 'success' });
+      return;
+    }
     setBillingData(prev => ({ ...prev, [key]: value }));
   };
 
+  // TODO
+  // 현재 이 함수는 사용이 안되는것 같음 : 확인이 필요
   const handleProductAdd = newProduct => {
     if (!newProduct) return;
-    if (billingData.products.length === 10) {
+    if (billingData.products.length > 10) {
       onAlert({ msg: ' 청구는 최대 10 개의 상품을 지녀야합니다.', type: 'success' });
     }
     setBillingData(prev => ({
@@ -146,7 +151,6 @@ const BillingRegisterPage = () => {
   const handleProductRemove = productId => {
     if (billingData.products.length < 2) {
       onAlert({ msg: ' 청구는 최소 한 개의 상품을 지녀야합니다.', type: 'success' });
-
       return;
     }
     setBillingData(prev => ({
@@ -170,8 +174,8 @@ const BillingRegisterPage = () => {
   };
 
   return (
-    <div className='primary-dashboard flex flex-col h-full'>
-      <div className='flex flex-1 overflow-hidden'>
+    <div className='primary-dashboard relative flex flex-col h-full'>
+      <div className='flex flex-1 pt-3 '>
         {/* 왼쪽: 계약 목록 */}
         <ContractList
           searchType={searchType}
@@ -187,14 +191,11 @@ const BillingRegisterPage = () => {
           setPageGroup={setPageGroup}
         />
 
-        {/* 중앙 구분선 */}
-        <div className='w-px bg-ipt_border' />
-
         {/* 오른쪽: 청구 생성 정보 */}
-        <div className='w-3/5 p-6 flex flex-col h-full overflow-hidden'>
-          <h2 className='text-2xl font-semibold mb-4 text-text_black'>청구 생성 정보</h2>
+        <div className='w-3/5 pl-4 flex flex-col h-full overflow-hidden '>
+          <h2 className='ml-1  text-text_black text-xl font-800 mb-6'>청구 생성 정보</h2>
           {selectedContract ? (
-            <div className='flex-1 overflow-hidden flex flex-col'>
+            <div className='flex-1 overflow-hidden flex flex-col '>
               <BillingForm
                 billingData={billingData}
                 handleBillingDataChange={handleBillingDataChange}
@@ -213,18 +214,18 @@ const BillingRegisterPage = () => {
       </div>
 
       {/* 하단 버튼 영역 */}
-      <div className='flex justify-end space-x-4 p-6 bg-white'>
+      <div className='absolute -bottom-2 -right-1 flex justify-end space-x-4 p-6 font-700 '>
         <button
           type='button'
-          onClick={() => navigate(-1)}
-          className='flex justify-between items-center px-4 py-2 ml-2 
-    font-700 rounded-md border cursor-pointer transition-all duration-200 ease-in-out text-red-500 border-red-500 hover:bg-red-50'>
+          onClick={() => navigate('/vendor/billings')}
+          className='flex justify-between items-center px-5 py-2 ml-2 text-red-500 border-red-500
+            rounded-lg border ease-in-out hover:bg-red-50 cursor-pointer transition-all duration-200 '>
           <FontAwesomeIcon icon={faTimes} className='mr-2' />
           <p>취소</p>
         </button>
         <button
           onClick={handleBillingSubmit}
-          className='flex items-center px-4 py-2 text-white border border-mint bg-mint hover:bg-mint_hover rounded'>
+          className='flex items-center px-5 py-2 text-white border border-mint bg-mint hover:bg-mint_hover rounded-lg transition-all duration-200'>
           <FontAwesomeIcon icon={faSave} className='mr-2' />
           <p>청구 생성</p>
         </button>

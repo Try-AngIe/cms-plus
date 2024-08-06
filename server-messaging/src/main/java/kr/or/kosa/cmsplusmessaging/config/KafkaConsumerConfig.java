@@ -23,6 +23,9 @@
      @Value("${kafkaGroup.messagingGroup}")
      private String messagingGroup;
 
+     @Value("${kafkaClient.messagingClient}")
+     private String messagingClient;
+
      @Bean
      public ConcurrentKafkaListenerContainerFactory<String, MessageDto> messagingKafkaListenerContainerFactory() {
          ConcurrentKafkaListenerContainerFactory<String, MessageDto> factory = new ConcurrentKafkaListenerContainerFactory<>();
@@ -42,6 +45,7 @@
          props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
          props.put(ConsumerConfig.GROUP_ID_CONFIG, messagingGroup);
          props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
+         props.put(ConsumerConfig.CLIENT_ID_CONFIG, messagingClient);
          props.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
          JsonDeserializer<MessageDto> jsonDeserializer = new JsonDeserializer<>(MessageDto.class, false);
          return new DefaultKafkaConsumerFactory<>(props, new StringDeserializer(), jsonDeserializer);

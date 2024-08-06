@@ -70,12 +70,13 @@ const MemDetailContractList = () => {
   }, [currentPage]);
 
   return (
-    <div className='sub-dashboard h-640 flex flex-col mb-5  pb-3'>
+    <div className='sub-dashboard h-640 flex flex-col mb-5 pb-3'>
       <div className='flex justify-between items-center border-b border-ipt_border px-2 pt-1 pb-3 mb-2 '>
         <p className='text-text_black text-xl font-800'>계약목록</p>
       </div>
-      <div className='flex flex-col h-full justify-between pt-5 px-5 '>
+      <div className='flex flex-col h-full justify-between pt-5 px-5'>
         <Table
+          size='h-[12.4%]'
           cols={cols}
           rows={contractList}
           currentPage={currentPage}

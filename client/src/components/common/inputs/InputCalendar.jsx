@@ -137,7 +137,7 @@ const InputCalendar = ({
                 }}
                 disabled={disabled}
                 readOnly={readOnly}
-                inputReadOnly={true} 
+                inputReadOnly={true}
                 style={customStyles.datePicker}
                 placeholder={placeholder}
                 {...props}

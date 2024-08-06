@@ -2,7 +2,6 @@ package kr.or.kosa.cmsplusmain.domain.billing.repository;
 
 import static kr.or.kosa.cmsplusmain.domain.billing.entity.QBillingProduct.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 

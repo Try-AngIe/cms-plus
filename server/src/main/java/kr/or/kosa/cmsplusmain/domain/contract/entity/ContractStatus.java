@@ -5,17 +5,17 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public enum ContractStatus implements BaseEnum {
-    ENABLED("진행중"), DISABLED("계약종료");
+	ENABLED("진행중"), DISABLED("계약종료");
 
-    private final String title;
+	private final String title;
 
-    @Override
-    public String getCode() {
-        return name();
-    }
+	@Override
+	public String getCode() {
+		return name();
+	}
 
-    @Override
-    public String getTitle() {
-        return title;
-    }
+	@Override
+	public String getTitle() {
+		return title;
+	}
 }

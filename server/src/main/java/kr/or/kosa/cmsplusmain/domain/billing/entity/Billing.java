@@ -8,12 +8,10 @@ import java.util.Set;
 
 import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.SQLRestriction;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
@@ -24,8 +22,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
-import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import kr.or.kosa.cmsplusmain.domain.base.entity.BaseEntity;
 import kr.or.kosa.cmsplusmain.domain.billing.exception.EmptyBillingProductException;
@@ -38,8 +34,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-// TODO member, vendor 비정규화
-
+// TODO member, vendor 비정규화 여부 검토
 @Comment("청구 (매 달 새로 쌓이는 정보)")
 @Entity
 @Getter
@@ -105,7 +100,7 @@ public class Billing extends BaseEntity {
 	// 동일 상품 추가 안됨
 	@OneToMany(mappedBy = "billing", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
 	@SQLRestriction(BaseEntity.NON_DELETED_QUERY)
-	private Set<BillingProduct> billingProducts = new HashSet<>();
+	private final Set<BillingProduct> billingProducts = new HashSet<>();
 
 	@Comment("청구금액 SUM(청구 상품 가격 * 수량) 미리 계산")
 	@Column(name = "billing_billing_price", nullable = false)
@@ -114,6 +109,21 @@ public class Billing extends BaseEntity {
 	@Comment("청구상품 수 미리 계산")
 	@Column(name = "billing_billing_prodcut_cnt", nullable = false)
 	private int billingProductCnt;
+
+	public Billing(Contract contract, BillingType billingType, LocalDate billingDate, int contractDay,
+		List<BillingProduct> billingProducts) {
+		// 청구는 최소 한 개의 상품을 가져야한다.
+		if (billingProducts.isEmpty()) {
+			throw new EmptyBillingProductException("청구는 최소 한 개 이상의 상품을 가져야합니다");
+		}
+
+		this.contract = contract;
+		this.billingType = billingType;
+		this.contractDay = contractDay;
+		this.billingDate = billingDate;
+
+		billingProducts.forEach(this::addBillingProduct);
+	}
 
 	/**
 	 * 청구 상품만 수정하는 경우 호출 안되므로 청구 상품 변경 메서드에서
@@ -127,20 +137,6 @@ public class Billing extends BaseEntity {
 			.sum();
 
 		this.billingProductCnt = billingProducts.size();
-	}
-
-	public Billing(Contract contract, BillingType billingType, LocalDate billingDate, int contractDay, List<BillingProduct> billingProducts) {
-		// 청구는 최소 한 개의 상품을 가져야한다.
-		if (billingProducts.isEmpty()) {
-			throw new EmptyBillingProductException("청구는 최소 한 개 이상의 상품을 가져야합니다");
-		}
-
-		this.contract = contract;
-		this.billingType = billingType;
-		this.contractDay = contractDay;
-		this.billingDate = billingDate;
-
-		billingProducts.forEach(this::addBillingProduct);
 	}
 
 	/**

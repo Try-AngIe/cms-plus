@@ -10,18 +10,18 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public class InvoiceRes {
-    private final Long billingId;
-    private final String billingStatus;
-    private final MemberDto member;
-    private final String invoiceName;
-    private final String invoiceMessage;
-    private final Long  billingPrice;
-    private final PaymentTypeInfoRes paymentType;
+	private final Long billingId;
+	private final String billingStatus;
+	private final MemberDto member;
+	private final String invoiceName;
+	private final String invoiceMessage;
+	private final Long billingPrice;
+	private final PaymentTypeInfoRes paymentType;
 
-    public static InvoiceRes fromEntity(Billing billing, Member member, PaymentTypeInfoRes paymentType) {
-        return new InvoiceRes(
-            billing.getId(), billing.getBillingStatus().getTitle(), MemberDto.fromEntity(member),
-            billing.getInvoiceName(), billing.getInvoiceMessage(), billing.getBillingPrice(),
-            paymentType);
-    }
+	public static InvoiceRes fromEntity(Billing billing, Member member, PaymentTypeInfoRes paymentType) {
+		return new InvoiceRes(
+			billing.getId(), billing.getBillingStatus().getTitle(), MemberDto.fromEntity(member),
+			billing.getInvoiceName(), billing.getInvoiceMessage(), billing.getBillingPrice(),
+			paymentType);
+	}
 }

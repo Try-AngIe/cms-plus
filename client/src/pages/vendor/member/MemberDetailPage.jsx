@@ -3,7 +3,6 @@ import MemDetailBasicInfo from '@/components/vendor/member/details/MemDetailBasi
 import MemDetailContractList from '@/components/vendor/member/details/MemDetailContractList';
 import MemDetailDisplay from '@/components/vendor/member/details/MemDetailDisplay';
 import MemDetailHeader from '@/components/vendor/member/details/MemDetailHeader';
-import { useMemberBasicStore } from '@/stores/useMemberBasicStore';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 

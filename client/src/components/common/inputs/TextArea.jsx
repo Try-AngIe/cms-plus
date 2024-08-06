@@ -24,6 +24,7 @@ const TextArea = ({
           disabled={disabled}
           placeholder={placeholder}
           {...props}
+          maxLength={2000}
         />
       </div>
     </div>

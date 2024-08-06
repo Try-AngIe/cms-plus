@@ -10,6 +10,7 @@ export const formatCardYearForStorage = year => {
 // 카드 년도 포맷팅 함수 (표시용)
 export const formatCardYearForDisplay = year => {
   year = String(year);
+  console.log(year);
   if (!year || year.length !== 4) return year;
   return String(year).substring(2);
 };

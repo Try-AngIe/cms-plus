@@ -9,7 +9,7 @@ const Main = () => {
       <div className='text-left w-full'>
         <h1 className='text-2xl font-bold text-teal-400 mb-4'>Hyosung CMS+</h1>
         <h3 className='font-semibold text-gray-700 text-base mb-8'>
-          아쿠르트에서 {invoiceInfo.member.name}님께
+          효성학원에서 {invoiceInfo.member.name}님께
           <br />
           청구서를 보냈습니다.
         </h3>

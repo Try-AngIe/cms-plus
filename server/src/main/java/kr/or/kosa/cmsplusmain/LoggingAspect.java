@@ -14,21 +14,29 @@ public class LoggingAspect {
 
     @Around("@annotation(kr.or.kosa.cmsplusmain.LogExecutionTime)")
     public Object logExecutionTime(ProceedingJoinPoint joinPoint) throws Throwable {
-        // 어노테이션에서 서비스 이름 추출
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         LogExecutionTime logExecutionTime = signature.getMethod().getAnnotation(LogExecutionTime.class);
         String serviceName = logExecutionTime.value();
         String methodName = signature.getMethod().getName();
 
-        long startTime = System.currentTimeMillis();
-        log.info("Started {} : {}", serviceName, methodName);
+        int iterations = 10;
+        long totalDuration = 0;
+        long[] durations = new long[iterations];
+        Object result = null;
 
-        Object proceed = joinPoint.proceed();
+        for (int i = 0; i < iterations; i++) {
+            long startTime = System.currentTimeMillis();
+            result = joinPoint.proceed();
+            long endTime = System.currentTimeMillis();
+            long duration = endTime - startTime;
+            durations[i] = duration;
+            totalDuration += duration;
+            log.info("Execution {} : {} Test #{} [{} ms]", serviceName, methodName, i + 1, duration);
+        }
 
-        long endTime = System.currentTimeMillis();
-        long duration = endTime - startTime;
-        log.info("Completed {} : {} in [{} ms]", serviceName, methodName, duration);
+        long averageDuration = totalDuration / iterations;
+        log.info("Completed {} : {} Average Time [{} ms]", serviceName, methodName, averageDuration);
 
-        return proceed;
+        return result;
     }
 }

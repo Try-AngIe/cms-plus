@@ -49,26 +49,58 @@ public class MemberCustomRepository extends BaseCustomRepository<Member> {
     * */
     public List<Member> searchAllMemberByVendor(Long vendorId, MemberSearchReq memberSearch, PageReq pageable) {
         return jpaQueryFactory
-            .selectFrom(member)
-            .leftJoin(member.contracts, contract).on(contract.deleted.isFalse())
-            .leftJoin(contract.contractProducts, contractProduct).on(contractProduct.deleted.isFalse())
-            .where(
-                member.vendor.id.eq(vendorId),
-                memberNotDel(),
-                memberNameContains(memberSearch.getMemberName()),
-                memberPhoneContains(memberSearch.getMemberPhone()),
-                memberEmailContains(memberSearch.getMemberEmail()),
-                memberEnrollDateEq(memberSearch.getMemberEnrollDate())
-            )
-            .groupBy(member.id)
-            .having(
-                contractNumberLoe(memberSearch.getContractCount()),
-                contractPriceLoeInGroup(memberSearch.getContractPrice())
-            )
-            .orderBy(buildMemberOrderSpecifier(pageable))
-            .offset(pageable.getPage())
-            .limit(pageable.getSize())
-            .fetch();
+                .selectFrom(member)
+                .leftJoin(member.contracts, contract).on(contract.deleted.isFalse())
+                .leftJoin(contract.contractProducts, contractProduct).on(contractProduct.deleted.isFalse())
+                .where(
+                        member.vendor.id.eq(vendorId),
+                        memberNotDel(),
+                        memberNameContains(memberSearch.getMemberName()),
+                        memberPhoneContains(memberSearch.getMemberPhone()),
+                        memberEmailContains(memberSearch.getMemberEmail()),
+                        memberEnrollDateEq(memberSearch.getMemberEnrollDate())
+                )
+                .groupBy(member.id)
+                .having(
+                        contractNumberLoe(memberSearch.getContractCount()),
+                        contractPriceLoeInGroup(memberSearch.getContractPrice())
+                )
+                .orderBy(buildMemberOrderSpecifier(pageable))
+                .offset(pageable.getPage())
+                .limit(pageable.getSize())
+                .fetch();
+    }
+
+    /**
+     * 전체 회원 수
+     * */
+    public int countAllMemberByVendor(Long vendorId, MemberSearchReq memberSearch) {
+        JPQLQuery<Long> subquery = JPAExpressions
+                .select(member.id)
+                .from(member)
+                .leftJoin(member.contracts, contract).on(contract.deleted.isFalse())
+                .leftJoin(contract.contractProducts, contractProduct).on(contractProduct.deleted.isFalse())
+                .where(
+                    member.vendor.id.eq(vendorId),
+                    memberNotDel(),
+
+                    memberNameContains(memberSearch.getMemberName()),
+                    memberPhoneContains(memberSearch.getMemberPhone()),
+                    memberEmailContains(memberSearch.getMemberEmail()),
+                    memberEnrollDateEq(memberSearch.getMemberEnrollDate())
+                )
+                .groupBy(member.id)
+                .having(
+                        contractNumberLoe(memberSearch.getContractCount()),
+                        contractPriceLoeInGroup(memberSearch.getContractPrice())
+                );
+
+        Long res = jpaQueryFactory.select(member.id.count())
+                .from(member)
+                .where(member.id.in(subquery))
+                .fetchOne();
+
+        return (res != null) ? res.intValue() : 0;
     }
 
     /**
@@ -104,38 +136,6 @@ public class MemberCustomRepository extends BaseCustomRepository<Member> {
                 memberPhoneContains(memberSearch.getMemberPhone())
             )
             .fetchOne();
-
-        return (res != null) ? res.intValue() : 0;
-    }
-
-    /**
-     * 전체 회원 수
-     * */
-    public int countAllMemberByVendor(Long vendorId, MemberSearchReq memberSearch) {
-        JPQLQuery<Long> subquery = JPAExpressions
-                .select(member.id)
-                .from(member)
-                .leftJoin(member.contracts, contract).on(contract.deleted.isFalse())
-                .leftJoin(contract.contractProducts, contractProduct).on(contractProduct.deleted.isFalse())
-                .where(
-                        member.vendor.id.eq(vendorId),
-                        memberNotDel(),
-
-                        memberNameContains(memberSearch.getMemberName()),
-                        memberPhoneContains(memberSearch.getMemberPhone()),
-                        memberEmailContains(memberSearch.getMemberEmail()),
-                        memberEnrollDateEq(memberSearch.getMemberEnrollDate())
-                )
-                .groupBy(member.id)
-                .having(
-                        contractNumberLoe(memberSearch.getContractCount()),
-                        contractPriceLoeInGroup(memberSearch.getContractPrice())
-                );
-
-        Long res = jpaQueryFactory.select(member.id.count())
-                .from(member)
-                .where(member.id.in(subquery))
-                .fetchOne();
 
         return (res != null) ? res.intValue() : 0;
     }
@@ -328,6 +328,8 @@ public class MemberCustomRepository extends BaseCustomRepository<Member> {
     private BooleanExpression memberEnrollDateEq(LocalDate memberEnrollDate) {
         return (memberEnrollDate != null) ? member.enrollDate.eq(memberEnrollDate) : null;
     }
+
+
 
     private BooleanExpression contractNumberLoe(Integer contractNumber) {
         if (contractNumber == null) {

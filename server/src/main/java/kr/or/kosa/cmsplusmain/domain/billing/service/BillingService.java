@@ -48,12 +48,25 @@ import kr.or.kosa.cmsplusmain.util.FormatUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+@Deprecated
 @Slf4j
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class BillingService {
 
+	// 청구서 URL(청구 ID), 청구서 메시지 내용
+	private static final String INVOICE_URL_FORMAT = "https://localhost:8080/invoice/%d";
+	private static final String INVOICE_MESSAGE_FORMAT =
+		"""
+			%s님의 청구서가 도착했습니다.
+					\t
+			- 청구서명: %s
+			- 납부할금액: %s원
+			- 납부 기한: %s
+					\t
+			납부하기: %s
+		\t""".trim();
 	private final BillingRepository billingRepository;
 	private final BillingCustomRepository billingCustomRepository;
 	private final BillingProductRepository billingProductRepository;
@@ -62,22 +75,9 @@ public class BillingService {
 	private final KafkaPaymentService kafkaPaymentService;
 	private final PaymentService paymentService;
 
-	// 청구서 URL(청구 ID), 청구서 메시지 내용
-	private static final String INVOICE_URL_FORMAT = "https://localhost:8080/invoice/%d";
-	private static final String INVOICE_MESSAGE_FORMAT =
-			"""
-			%s님의 청구서가 도착했습니다.
-			
-			- 청구서명: %s
-			- 납부할금액: %s원
-			- 납부 기한: %s
-			
-			납부하기: %s
-			""".trim();
-
 	/*
-	* 청구서 발송
-	* */
+	 * 청구서 발송
+	 * */
 	@Transactional
 	public void sendInvoice(Long vendorId, Long billingId) {
 		Billing billing = validateAndGetBilling(vendorId, billingId);
@@ -109,22 +109,24 @@ public class BillingService {
 	}
 
 	private void sendInvoiceMessage(String message, Member member) {
-		 //청구서 링크 발송
-		 MessageSendMethod sendMethod = member.getInvoiceSendMethod();
+		//청구서 링크 발송
+		MessageSendMethod sendMethod = member.getInvoiceSendMethod();
 
-		 switch (sendMethod) {
-		 	case SMS -> { SmsMessageDto smsMessageDto = new SmsMessageDto(message, member.getPhone());
-		 					kafkaMessagingService.produceMessaging(smsMessageDto);
-			 }
-		 	case EMAIL -> { EmailMessageDto emailMessageDto = new EmailMessageDto(message, member.getEmail());
-		 					kafkaMessagingService.produceMessaging(emailMessageDto);
-			 }
-		 }
+		switch (sendMethod) {
+			case SMS -> {
+				SmsMessageDto smsMessageDto = new SmsMessageDto(message, member.getPhone());
+				kafkaMessagingService.produceMessaging(smsMessageDto);
+			}
+			case EMAIL -> {
+				EmailMessageDto emailMessageDto = new EmailMessageDto(message, member.getEmail());
+				kafkaMessagingService.produceMessaging(emailMessageDto);
+			}
+		}
 	}
 
 	/*
-	* 청구서 발송 취소
-	* */
+	 * 청구서 발송 취소
+	 * */
 	@Transactional
 	public void cancelInvoice(Long vendorId, Long billingId) {
 		Billing billing = validateAndGetBilling(vendorId, billingId);
@@ -148,13 +150,15 @@ public class BillingService {
 
 		switch (method) {
 			case CARD -> {
-				CardMethodRes cardMethodRes = (CardMethodRes) paymentService.getPaymentMethodInfoRes(payment);
-				CardPaymentDto cardPaymentDto = new CardPaymentDto(billingId, member.getPhone(), cardMethodRes.getCardNumber());
+				CardMethodRes cardMethodRes = (CardMethodRes)paymentService.getPaymentMethodInfoRes(payment);
+				CardPaymentDto cardPaymentDto = new CardPaymentDto(billingId, member.getPhone(),
+					cardMethodRes.getCardNumber());
 				kafkaPaymentService.producePayment(cardPaymentDto);
 			}
 			case CMS -> {
-				CMSMethodRes cmsMethodRes = (CMSMethodRes) paymentService.getPaymentMethodInfoRes(payment);
-				AccountPaymentDto accountPaymentDto = new AccountPaymentDto(billingId, member.getPhone(), cmsMethodRes.getAccountNumber());
+				CMSMethodRes cmsMethodRes = (CMSMethodRes)paymentService.getPaymentMethodInfoRes(payment);
+				AccountPaymentDto accountPaymentDto = new AccountPaymentDto(billingId, member.getPhone(),
+					cmsMethodRes.getAccountNumber());
 				kafkaPaymentService.producePayment(accountPaymentDto);
 			}
 
@@ -164,8 +168,8 @@ public class BillingService {
 	}
 
 	/*
-	* 청구 실시간 결제 취소
-	* */
+	 * 청구 실시간 결제 취소
+	 * */
 	@Transactional
 	public void cancelPayBilling(Long vendorId, Long billingId) {
 		Billing billing = validateAndGetBilling(vendorId, billingId);
@@ -273,7 +277,6 @@ public class BillingService {
 		updateBillingProducts(billing, newBillingProducts);
 	}
 
-
 	/**
 	 * 청구 삭제 | 연관된 청구상품도 동시에 삭제된다.
 	 * 5+x회 쿼리 발생 | 청구존재여부, 청구 조회, 청구상품 조회 * x(배치사이즈: 100), 청구삭제, 청구상품 삭제
@@ -284,8 +287,8 @@ public class BillingService {
 		BillingState.Field.DELETE.validateState(billing);
 
 		List<Long> billingProductIds = billing.getBillingProducts().stream()
-				.mapToLong(BillingProduct::getId)
-				.boxed().toList();
+			.mapToLong(BillingProduct::getId)
+			.boxed().toList();
 
 		billing.deleteWithoutProducts();
 		billingProductRepository.deleteAllById(billingProductIds);

@@ -24,9 +24,12 @@ public class KafkaController {
     private final KafkaMessagingService kafkaMessagingService;
     private final KafkaPaymentService kafkaPaymentService;
 
+    // 테스트용
     @PostMapping("/messaging/sms")
-    public void sendSms(@RequestBody SmsMessageDto smsMessageDto) {
+    public String sendSms(@RequestBody SmsMessageDto smsMessageDto) {
+        log.error("넘어간다 {}");
         kafkaMessagingService.produceMessaging(smsMessageDto);
+        return "성공";
     }
 
     @PostMapping("/messaging/email")

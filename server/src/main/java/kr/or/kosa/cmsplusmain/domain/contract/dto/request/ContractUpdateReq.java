@@ -11,14 +11,14 @@ import lombok.Getter;
 
 @Getter
 public class ContractUpdateReq {
-    @ContractName
-    @NotNull
-    private String contractName;						// 계약명
+	@ContractName
+	@NotNull
+	private String contractName;                        // 계약명
 
-    @NotNull
-    @Size(
-        min = Contract.MIN_CONTRACT_PRODUCT_NUMBER,
-        max = Contract.MAX_CONTRACT_PRODUCT_NUMBER,
-        message = "상품 수량은 " + Contract.MIN_CONTRACT_PRODUCT_NUMBER + "~" + Contract.MAX_CONTRACT_PRODUCT_NUMBER)
-    private List<@Valid ContractProductReq> contractProducts;	// 계약상품 목록
+	@NotNull
+	@Size(
+		min = Contract.MIN_CONTRACT_PRODUCT_NUMBER,
+		max = Contract.MAX_CONTRACT_PRODUCT_NUMBER,
+		message = "상품 수량은 " + Contract.MIN_CONTRACT_PRODUCT_NUMBER + "~" + Contract.MAX_CONTRACT_PRODUCT_NUMBER)
+	private List<@Valid ContractProductReq> contractProducts;    // 계약상품 목록
 }

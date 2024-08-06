@@ -28,7 +28,7 @@ const InvoicePage = () => {
       setPaymentType(res.data.paymentType.paymentType.code);
     } catch (err) {
       console.error('청구서 정보 조회 실패:', err);
-      throw err;
+      alert(err.response.data.message);
     }
   };
 

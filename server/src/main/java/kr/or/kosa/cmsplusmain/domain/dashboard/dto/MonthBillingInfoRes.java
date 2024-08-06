@@ -14,9 +14,7 @@ import lombok.Getter;
 public class MonthBillingInfoRes {
 	private final Long totalBillingPrice;
 	private final Map<BillingStatus, Long> statusPrices;
-
 	private final Integer totalBillingAmount;
 	private final Map<BillingStatus, Integer> statusCounts;
-
 	private final List<DayBillingRes> dayBillingRes;
 }

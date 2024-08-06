@@ -1,8 +1,8 @@
 import SelectField from '@/components/common/selects/SelectField';
 import InputWeb from '@/components/common/inputs/InputWeb';
 import { useMemberPaymentStore } from '@/stores/useMemberPaymentStore';
-import bankOptions from '@/utils/bank/bankOptions';
 import { validateField } from '@/utils/validators';
+import { bankOptions } from '@/utils/bank/bank';
 
 const VirtualAccountTypeForm = ({ paymentType, formType }) => {
   const { paymentTypeInfoReq_Virtual, setPaymentTypeInfoReq_Virtual } = useMemberPaymentStore();

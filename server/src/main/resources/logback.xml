@@ -9,7 +9,7 @@
 
     <!--CONSOLE에 찍히는 로그 설정-->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-        <filter class="kr.or.kosa.cmsplusmain.LogbackFilter"/>
+<!--        <filter class="kr.or.kosa.cmsplusmain.LogbackFilter"/>-->
         <encoder>
             <pattern>${CONSOLE_LOG_PATTERN}</pattern>
         </encoder>
@@ -17,7 +17,7 @@
 
     <!--FILE에 찍히는 로그 설정-->
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <filter class="kr.or.kosa.cmsplusmain.LogbackFilter"/>
+<!--        <filter class="kr.or.kosa.cmsplusmain.LogbackFilter"/>-->
         <encoder>
             <pattern>${FILE_LOG_PATTERN}</pattern>
         </encoder>

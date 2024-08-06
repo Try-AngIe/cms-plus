@@ -33,6 +33,7 @@
                  TopicBuilder.name(paymentResultTopic)
                          .partitions(3)
                          .replicas(3)
+                         .config(TopicConfig.MIN_IN_SYNC_REPLICAS_CONFIG, "2")
                          .config(TopicConfig.RETENTION_MS_CONFIG, String.valueOf(60000))
                          .build()
          );

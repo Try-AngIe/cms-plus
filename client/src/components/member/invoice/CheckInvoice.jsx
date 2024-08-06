@@ -17,16 +17,15 @@ const CheckInvoice = () => {
       <div className='mb-4 h-40 border border-mint rounded-lg p-4 flex flex-col justify-between'>
         <div>
           <p className='text-base font-semibold'>{invoiceInfo.invoiceName}</p>
-          <p className='text-xs text-gray-500'>2024년 06월</p>
         </div>
         <div className='self-end'>
           <p className='font-semibold text-lg'>{invoiceInfo.billingPrice.toLocaleString()}원</p>
         </div>
       </div>
       <div className='mb-4 space-y-2 border-b border-t py-3'>
-        <InfoRow label='업체명' value='(주)야쿠르트' />
-        <InfoRow label='대표자' value='박민석' />
-        <InfoRow label='대표번호' value='1509-1524' />
+        <InfoRow label='업체명' value='메가스터디교육(주)' />
+        <InfoRow label='대표자' value='손성은' />
+        <InfoRow label='대표번호' value='1599-1010' />
       </div>
     </div>
   );

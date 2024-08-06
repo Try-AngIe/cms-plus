@@ -2,14 +2,15 @@ package kr.or.kosa.cmsplusmain.domain.base.validator;
 
 import java.util.regex.Pattern;
 
+import org.springframework.util.StringUtils;
+
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-import org.springframework.util.StringUtils;
 
 public class HttpUrlValidator implements ConstraintValidator<HttpUrl, String> {
 
 	private static final Pattern USERNAME_PATTERN = Pattern.compile(
-	"^(https?|ftp)://[^\s/$.?#].[^\s]*$"
+		"^(https?|ftp)://[^ /$.?#].[^ ]*$"
 	);
 
 	@Override

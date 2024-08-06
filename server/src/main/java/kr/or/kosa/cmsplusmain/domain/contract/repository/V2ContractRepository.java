@@ -1,7 +1,5 @@
 package kr.or.kosa.cmsplusmain.domain.contract.repository;
 
-import static kr.or.kosa.cmsplusmain.domain.billing.entity.QBilling.*;
-import static kr.or.kosa.cmsplusmain.domain.billing.entity.QBillingProduct.*;
 import static kr.or.kosa.cmsplusmain.domain.contract.entity.QContract.*;
 import static kr.or.kosa.cmsplusmain.domain.contract.entity.QContractProduct.*;
 import static kr.or.kosa.cmsplusmain.domain.member.entity.QMember.*;
@@ -19,7 +17,6 @@ import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.core.types.dsl.StringExpression;
 import com.querydsl.jpa.JPAExpressions;
-import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQuery;
 
 import kr.or.kosa.cmsplusmain.domain.base.dto.PageReq;
@@ -67,16 +64,16 @@ public class V2ContractRepository extends V2BaseRepository<Contract, Long> {
 			.join(contract.member, member)
 			.join(contract.payment, payment)
 			.where(
-				contractVendorIdEq(vendorId),					// 고객의 계약
-				contractStatusEq(search.getContractStatus()),	// 계약 상태 일치
-				contractPriceLoe(search.getContractPrice()),	// 계약 금액 이하
-				contractDayEq(search.getContractDay()),			// 계약일 일치
-				memberNameContains(search.getMemberName()),		// 회원명 포함
-				memberPhoneContains(search.getMemberPhone()),	// 휴대전화 포함
-				paymentTypeEq(search.getPaymentType()),			// 결제방식 일치
-				paymentMethodEq(search.getPaymentMethod()),		// 결제수단 일치
-				firstProductNameSubQuery(search.getProductName()).isNotNull(),	// 상품명 포함
-				memberIdEq(search.getMemberId())				// 회원 ID 일치 (회원 상세 계약목록)
+				contractVendorIdEq(vendorId),                    // 고객의 계약
+				contractStatusEq(search.getContractStatus()),    // 계약 상태 일치
+				contractPriceLoe(search.getContractPrice()),    // 계약 금액 이하
+				contractDayEq(search.getContractDay()),            // 계약일 일치
+				memberNameContains(search.getMemberName()),        // 회원명 포함
+				memberPhoneContains(search.getMemberPhone()),    // 휴대전화 포함
+				paymentTypeEq(search.getPaymentType()),            // 결제방식 일치
+				paymentMethodEq(search.getPaymentMethod()),        // 결제수단 일치
+				firstProductNameSubQuery(search.getProductName()).isNotNull(),    // 상품명 포함
+				memberIdEq(search.getMemberId())                // 회원 ID 일치 (회원 상세 계약목록)
 			);
 	}
 

@@ -1,8 +1,9 @@
 package kr.or.kosa.cmsplusmain.domain.base.validator;
 
+import org.springframework.util.StringUtils;
+
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-import org.springframework.util.StringUtils;
 
 public class MemoValidator implements ConstraintValidator<Memo, String> {
 

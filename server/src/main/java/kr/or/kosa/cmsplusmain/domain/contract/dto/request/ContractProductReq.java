@@ -15,17 +15,17 @@ import lombok.ToString;
 @ToString
 public class ContractProductReq {
 	@NotNull(message = "상품 정보가 필요합니다")
-	private Long productId;				// 상품 ID
+	private Long productId;                // 상품 ID
 
 	@ProductPrice
 	@NotNull(message = "상품 가격이 설정되지 않았습니다")
-	private Integer price;				// 계약 상품 가격
+	private Integer price;                // 계약 상품 가격
 
 	@ProductQuantity
 	@NotNull(message = "상품 수량이 설정되지 않았습니다")
-	private Integer quantity;			// 계약 상품 수량
+	private Integer quantity;            // 계약 상품 수량
 
-    public ContractProduct toEntity(String name) {
+	public ContractProduct toEntity(String name) {
 		return ContractProduct.builder()
 			.product(Product.of(productId))
 			.name(name)
@@ -36,11 +36,11 @@ public class ContractProductReq {
 
 	public ContractProduct toEntity(Contract contract, String name) {
 		return ContractProduct.builder()
-				.product(Product.of(productId))
-				.name(name)
-				.contract(contract)
-				.price(price)
-				.quantity(quantity)
-				.build();
+			.product(Product.of(productId))
+			.name(name)
+			.contract(contract)
+			.price(price)
+			.quantity(quantity)
+			.build();
 	}
 }

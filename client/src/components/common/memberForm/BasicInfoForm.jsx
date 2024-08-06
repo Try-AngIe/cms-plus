@@ -105,7 +105,7 @@ const BasicInfoForm = ({ formType, memberData }) => {
           placeholder='숫자만 입력해주세요.'
           classInput='py-[14px]'
           type='text'
-          value={formatPhone(dataSource.memberHomePhone)}
+          value={dataSource.memberHomePhone !== null ? formatPhone(dataSource.memberHomePhone) : ''}
           disabled={isDisabled}
           onChange={handleChangeValue}
           onKeyDown={handleKeyDown}
@@ -139,7 +139,9 @@ const BasicInfoForm = ({ formType, memberData }) => {
             placeholder='우편번호'
             classInput='py-[14px]'
             type='address'
-            value={dataSource.memberAddress.zipcode}
+            value={
+              dataSource.memberAddress.zipcode !== null ? dataSource.memberAddress.zipcode : ''
+            }
             classContainer='mr-5'
             disabled={isDisabled}
             readOnly
@@ -150,7 +152,9 @@ const BasicInfoForm = ({ formType, memberData }) => {
             placeholder='주소'
             classInput='py-[14px]'
             type='text'
-            value={dataSource.memberAddress.address}
+            value={
+              dataSource.memberAddress.address !== null ? dataSource.memberAddress.address : ''
+            }
             disabled={isDisabled}
             classContainer='w-full'
             readOnly
@@ -163,7 +167,11 @@ const BasicInfoForm = ({ formType, memberData }) => {
           placeholder='상세 주소'
           classInput='py-[14px]'
           type='text'
-          value={dataSource.memberAddress.addressDetail}
+          value={
+            dataSource.memberAddress.addressDetail !== null
+              ? dataSource.memberAddress.addressDetail
+              : ''
+          }
           disabled={isDisabled}
           classContainer='mb-3'
           onChange={e => handleChangeAddress(e.target.id, e.target.value)}
@@ -174,7 +182,7 @@ const BasicInfoForm = ({ formType, memberData }) => {
           label='메모'
           disabled={isDisabled}
           classTextarea='h-52'
-          value={dataSource.memberMemo}
+          value={dataSource.memberMemo !== null ? dataSource.memberMemo : ''}
           onChange={handleChangeValue}
           maxLength={2000}
         />

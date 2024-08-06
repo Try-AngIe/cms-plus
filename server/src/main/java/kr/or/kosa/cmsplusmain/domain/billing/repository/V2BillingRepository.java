@@ -14,11 +14,7 @@ import org.springframework.util.StringUtils;
 
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberExpression;
-import com.querydsl.core.types.dsl.StringExpression;
-import com.querydsl.jpa.JPAExpressions;
-import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQuery;
 
 import kr.or.kosa.cmsplusmain.domain.base.dto.PageReq;
@@ -34,6 +30,17 @@ public class V2BillingRepository extends V2BaseRepository<Billing, Long> {
 	public Billing findById(Long id) {
 		return selectFrom(billing)
 			.where(billing.id.eq(id))
+			.fetchOne();
+	}
+
+	/**
+	 * 삭제된 청구도 조회된다.
+	 * 요구사항: 청구서 조회 시 삭제 여부를 회원에게 알릴 수 있다.
+	 * */
+	public Billing findByIdIncludingDeleted(Long billingId) {
+		return selectWithDel(billing)
+			.from(billing)
+			.where(billing.id.eq(billingId))
 			.fetchOne();
 	}
 
@@ -79,15 +86,15 @@ public class V2BillingRepository extends V2BaseRepository<Billing, Long> {
 			.join(contract.member, member)
 			.join(contract.payment, payment)
 			.where(
-				contractVendorIdEq(vendorId),							// 고객 일치
-				memberNameContains(search.getMemberName()),				// 회원명 포함
-				memberPhoneContains(search.getMemberPhone()),			// 휴대전화 포함
-				billingStatusEq(search.getBillingStatus()),				// 청구상태 일치
-				billingPriceLoe(search.getBillingPrice()),				// 청구금액 이하
-				paymentTypeEq(search.getPaymentType()),					// 결제방식 일치
-				billingDateEq(search.getBillingDate()),					// 결제일 일치
-				firstProductNameSubQuery(search.getProductName()).isNotNull(),	// 상품명 포함
-				contractIdEq(search.getContractId())					// 계약 ID 일치 (계약 상세 청구목록)
+				contractVendorIdEq(vendorId),                            // 고객 일치
+				memberNameContains(search.getMemberName()),                // 회원명 포함
+				memberPhoneContains(search.getMemberPhone()),            // 휴대전화 포함
+				billingStatusEq(search.getBillingStatus()),                // 청구상태 일치
+				billingPriceLoe(search.getBillingPrice()),                // 청구금액 이하
+				paymentTypeEq(search.getPaymentType()),                    // 결제방식 일치
+				billingDateEq(search.getBillingDate()),                    // 결제일 일치
+				firstProductNameSubQuery(search.getProductName()).isNotNull(),    // 상품명 포함
+				contractIdEq(search.getContractId())                    // 계약 ID 일치 (계약 상세 청구목록)
 			);
 	}
 
@@ -120,28 +127,7 @@ public class V2BillingRepository extends V2BaseRepository<Billing, Long> {
 			.fetchOne();
 	}
 
-
 	/*********** 조건 ************/
-	/**
-	 * @deprecated groupby 절 삭제로, 일반 서브쿼리 대체
-	 * */
-	@Deprecated
-	private StringExpression getFirstProductName(String productName) {
-		if (StringUtils.hasText(productName)) {
-			return Expressions.stringTemplate(
-				"COALESCE({0}, {1})",
-				JPAExpressions
-					.select(Expressions.stringTemplate("ANY_VALUE({0})", billingProduct.name))
-					.from(billingProduct)
-					.where(billingProduct.billing.eq(billing),
-						billingProduct.name.contains(productName))
-					.groupBy(billingProduct.billing.id),
-				billingProduct.name.min()
-			);
-		} else {
-			return billingProduct.name.min();
-		}
-	}
 
 	private BooleanExpression productNameContains(String productName) {
 		return StringUtils.hasText(productName) ? billingProduct.name.contains(productName) : null;
@@ -151,30 +137,14 @@ public class V2BillingRepository extends V2BaseRepository<Billing, Long> {
 		return billingPrice != null ? billing.billingPrice.loe(billingPrice) : null;
 	}
 
-	/**
-	 * @deprecated where subquery -> select subquery 변경됨
-	 * */
-	@Deprecated
-	private BooleanExpression productNameContainsInBilling(String productName) {
-		if (!StringUtils.hasText(productName)) {
-			return null;
-		}
-		return billing.id.in(
-			JPAExpressions
-				.select(billingProduct.billing.id)
-				.from(billingProduct)
-				.where(billingProduct.name.contains(productName))
-		);
-	}
-
 	private JPAQuery<String> firstProductNameSubQuery(String productName) {
 		// 검색어를 프론트에 표시할 상품 이름에 표시하기 위한 서브쿼리
 		// Querydsl 에서는 서브쿼리에 limit 조건이 반영 안되므로 min 사용
 		return from(billingProduct)
-				.select(billingProduct.name.min())
-				.where(
-					billingProduct.billing.eq(billing),
-					productNameContains(productName));
+			.select(billingProduct.name.min())
+			.where(
+				billingProduct.billing.eq(billing),
+				productNameContains(productName));
 	}
 
 	private OrderSpecifier<?> buildOrderSpecifier(PageReq pageReq) {

@@ -1,6 +1,6 @@
 import MemberChooseModal from '@/components/vendor/modal/MemberChooseModal';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Table from '@/components/common/tables/Table.jsx';
 import { getContractList } from '@/apis/contract.js';
 import PagiNation from '@/components/common/PagiNation';
@@ -9,6 +9,7 @@ import MoveButton from '@/components/common/buttons/MoveButton';
 import file from '@/assets/file.svg';
 import sign from '@/assets/sign.svg';
 import user from '@/assets/user.svg';
+import send from '@/assets/send.svg';
 import File from '@/assets/File';
 import { formatPhone } from '@/utils/format/formatPhone';
 import useDebounce from '@/hooks/useDebounce';
@@ -16,6 +17,9 @@ import { cols, initialSearch, selectOptions } from '@/utils/tableElements/contra
 import { formatProductsForList } from '@/utils/format/formatProducts';
 import ReqSimpConsentErrorModal from '@/components/vendor/modal/ReqSimpConsentErrorModal';
 import { sendReqSimpConsent } from '@/apis/simpleConsent';
+import useAlert from '@/hooks/useAlert';
+import LoadingSpinner from '@/components/common/loadings/LoadingSpinner';
+import useConfirm from '@/hooks/useConfirm';
 
 const ContractListPage = () => {
   const [contractList, setContractList] = useState([]); // 계약 목록
@@ -39,7 +43,10 @@ const ContractListPage = () => {
 
   const [simpErrors, setSimpErrors] = useState();
   const [isShowSimpModal, setIsShowSimpModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
+  const onAlert = useAlert();
+  const onConfirm = useConfirm();
   const navigate = useNavigate();
 
   // <--------계약 목록 조회-------->
@@ -58,6 +65,7 @@ const ContractListPage = () => {
           page: page,
           size: 10,
         });
+
         const transformdData = transformContractListItem(res.data.content);
         setContractList(transformdData);
         setFilteredListCount(res.data.totalCount);
@@ -66,18 +74,15 @@ const ContractListPage = () => {
         }
         setTotalPages(res.data.totalPage || 1);
       } catch (err) {
-        console.error('axiosMemberList => ', err);
+        console.error('axiosContractList => ', err);
       }
     },
-    [currentPage]
+    [currentPage, currentorder, currentorderBy]
   );
 
   // <--------데이터 변환-------->
   const transformContractListItem = data => {
     return data.map(contract => {
-      // const { contractDay, contractPrice, contractProducts, contractStatus, memberPhone } =
-      //   contract;
-
       const {
         contractDay,
         contractPrice,
@@ -124,30 +129,49 @@ const ContractListPage = () => {
   // <--------간편동의 버튼 클릭 핸들러-------->
   const handleClickSimpConsent = async () => {
     if (!selectedContracts || selectedContracts.length === 0) {
-      alert('선택된 계약이 없습니다!');
+      onAlert({ msg: '선택된 계약이 없습니다.', type: 'error', title: '요청 실패' });
       return;
     }
 
-    const errors = [];
-    await Promise.allSettled(
-      selectedContracts.map(async contract =>
-        sendReqSimpConsent(contract.contractId).catch(err =>
-          errors.push({
-            from: contract,
-            res: err.response.data,
-            total: selectedContracts.length,
-          })
-        )
-      )
-    );
+    const confirmMessage = `${selectedContracts.length}건의 간편동의를 요청하시겠습니까?`;
 
-    // 실패항목이 있는 경우
-    if (errors.length !== 0) {
-      setSimpErrors(errors);
-      setIsShowSimpModal(true);
-    } else {
-      alert(`${selectedContracts.length}개의 청구 결제를 성공했습니다.`);
+    const isSend = await onConfirm({
+      msg: confirmMessage,
+      title: '간편동의 발송',
+    });
+
+    if (!isSend) {
+      return;
     }
+
+    setIsLoading(true);
+    setTimeout(async () => {
+      const errors = [];
+      await Promise.allSettled(
+        selectedContracts.map(async contract =>
+          sendReqSimpConsent(contract.contractId).catch(err =>
+            errors.push({
+              from: contract,
+              res: err.response.data,
+              total: selectedContracts.length,
+            })
+          )
+        )
+      );
+      setIsLoading(false);
+
+      // 실패항목이 있는 경우
+      if (errors.length !== 0) {
+        setSimpErrors(errors);
+        setIsShowSimpModal(true);
+      } else {
+        onAlert({
+          msg: `${selectedContracts.length}개의 간편 서명 동의 요청에 성공했습니다.`,
+          type: 'success',
+          title: '요청 성공',
+        });
+      }
+    }, 1500);
   };
 
   // <--------검색 클릭 이벤트 핸들러-------->
@@ -198,7 +222,6 @@ const ContractListPage = () => {
             axiosList={axiosContractList}
           />
         </div>
-
         <div>
           <div className='flex'>
             <MoveButton
@@ -252,10 +275,12 @@ const ContractListPage = () => {
 
       <ReqSimpConsentErrorModal
         errors={simpErrors}
+        icon={send}
         isShowModal={isShowSimpModal}
         setIsShowModal={setIsShowSimpModal}
         modalTitle={'간편동의 요청'}
       />
+      {isLoading && <LoadingSpinner size='xl' text='간편 동의 요청중...' shape='box' />}
     </div>
   );
 };

@@ -24,7 +24,7 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final ProductCustomRepository productCustomRepository;
 
-    /*
+    /**
     * 상품 생성
     * */
     @Transactional
@@ -33,7 +33,7 @@ public class ProductService {
         productRepository.save(productCreateReq.toEntity(Vendor.builder().id(vendorId).build()));
     }
 
-    /*
+    /**
      * 상품 목록 조회
      * */
     public PageRes<ProductListItemRes> searchProducts(Long vendorId, ProductSearchReq search, PageReq pageable) {
@@ -47,7 +47,7 @@ public class ProductService {
         return new PageRes<>(totalContentCount, pageable.getSize(), content);
     }
 
-    /*
+    /**
      * 상품 상세 조회
      * */
     public ProductDetailRes getProductDetail(Long productId, Long vendorId) {
@@ -55,8 +55,7 @@ public class ProductService {
         validateProductUser(productId, vendorId);
 
         // 계약 건수
-        int contractNum = productCustomRepository
-                .getContractNumber(productId);
+        int contractNum = productCustomRepository.getContractNumber(productId);
 
         // 상품 정보(계약건수를 제외한)
         Product product = productRepository
@@ -81,7 +80,7 @@ public class ProductService {
             .collect(Collectors.toList());
     }
 
-    /*
+    /**
      * 상품 수정
      * */
     @Transactional
@@ -92,7 +91,7 @@ public class ProductService {
         product.setPrice(productUpdateReq.getProductPrice());
     }
 
-    /*
+    /**
      * 상품 삭제
      * 삭제 조건은 현재 진행중인 계약이 없는 상품만 삭제가 가능하다.
      * */
@@ -107,7 +106,9 @@ public class ProductService {
         product.delete();
     }
 
-    // 유효성 검증
+    /**
+     * 유효성 검증
+     * */
     private void validateProductUser(Long productId, Long vendorId) {
         if (!productCustomRepository.isExistProductByUsername(productId, vendorId)) {
             throw new IllegalArgumentException("Not Owner");

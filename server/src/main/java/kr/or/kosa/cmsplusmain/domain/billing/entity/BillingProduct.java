@@ -47,11 +47,11 @@ public class BillingProduct extends BaseEntity {
 	private Product product;
 
 	// 청구상품의 이름 수정불가
-	// 조인횟수 감소를 위한 반정규화로
-	// 상품 이름 삭제 불가
+	// 조인 횟수 감소를 위해 상품 테이블에 있는 이름을 중복 저장하는 컬럼
 	@Comment("청구상품의 이름")
 	@Column(name = "billing_product_name", nullable = false, updatable = false)
-	@ProductName @NotNull
+	@ProductName
+	@NotNull
 	private String name;
 
 	@Comment("청구상품의 가격")
@@ -73,16 +73,16 @@ public class BillingProduct extends BaseEntity {
 	}
 
 	/**
-	* 청구상품 가격 (가격 * 수량)
-	* */
+	 * 청구상품 가격 (가격 * 수량)
+	 * */
 	public long getBillingProductPrice() {
 		return (long)price * quantity;
 	}
 
 	/**
-	* 청구상품 동일성 비교 |
-	* 청구상품은 동일한 상품을 중복해서 지닐 수 없다.
-	* */
+	 * 청구상품 동일성 비교 |
+	 * 청구상품은 동일한 상품을 중복해서 지닐 수 없다.
+	 * */
 	@Override
 	public boolean equals(Object obj) {
 		if (!(obj instanceof BillingProduct other)) {

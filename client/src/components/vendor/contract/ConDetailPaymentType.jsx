@@ -8,7 +8,7 @@ const ConDetailPaymentType = ({ contractData }) => {
   const contractEndDate = contractData?.contractEndDate ?? '';
 
   return (
-    <div className='flex-col p-5'>
+    <div className='flex-col p-4'>
       <div className='flex flex-col justify-between flex-1'>
         <div className='flex items-end mb-5 mt-3'>
           <InputWeb
@@ -16,9 +16,10 @@ const ConDetailPaymentType = ({ contractData }) => {
             label='결제방식'
             value={paymentTypeTitle}
             type='text'
-            classContainer='w-full mr-6'
+            classContainer='w-full'
             disabled={true}
           />
+          <div className='flex items-start justify-center text-lg w-14 py-3' />
           <InputWeb
             id='contractDay'
             label='약정일'
@@ -28,21 +29,22 @@ const ConDetailPaymentType = ({ contractData }) => {
             disabled={true}
           />
         </div>
-        <div className='flex items-end mb-5'>
+        <div className='flex items-end mb-5 '>
           <InputWeb
             id='contractStartDate'
             label='계약기간'
             value={contractStartDate}
             type='text'
-            classContainer='w-full mr-3'
+            classContainer='w-full'
             disabled={true}
           />
+          <div className='flex items-start justify-center text-lg w-14 py-3'>~</div>
           <InputWeb
             id='contractEndDate'
             label=''
             value={contractEndDate}
             type='text'
-            classContainer='w-full'
+            classContainer='w-full '
             disabled={true}
           />
         </div>

@@ -6,15 +6,63 @@ networks:
 
 services:
 
-  zookeeper:
-    container_name: zookeeper
-    image: wurstmeister/zookeeper
+  # zookeeper:
+  #   container_name: zookeeper
+  #   image: wurstmeister/zookeeper
+  #   ports:
+  #     - 2181:2181
+  #   environment:  
+  #     ZOOKEEPER_CLIENT_PORT: '2181'
+  #     ALLOW_ANONYMOUS_LOGIN: 'yes'
+  #   restart: unless-stopped
+  #   networks:
+  #     - kafka-network
+
+  zk1:
+    container_name: zookeeper1
+    image: wurstmeister/zookeeper:latest
+    restart: always
+    hostname: zk1
     ports:
-      - 2181:2181
+      - "2181:2181"
     environment:
-      ZOOKEEPER_CLIENT_PORT: '2181'
+      ZOO_MY_ID: 1
+      ZOO_SERVERS: server.1=zk1:2888:3888;2181 server.2=zk2:2888:3888;2181 server.3=zk3:2888:3888;2181
       ALLOW_ANONYMOUS_LOGIN: 'yes'
-    restart: unless-stopped
+    volumes:
+      - "~/zk-cluster/zk1/data:/data"
+    networks:
+      - kafka-network
+
+  zk2:
+    container_name: zookeeper2
+    image: wurstmeister/zookeeper:latest
+    restart: always
+    hostname: zk2
+    ports:
+      - "2182:2181"
+    environment:
+      ZOO_MY_ID: 2
+      ZOO_SERVERS: server.1=zk1:2888:3888;2181 server.2=zk2:2888:3888;2181 server.3=zk3:2888:3888;2181
+      ALLOW_ANONYMOUS_LOGIN: 'yes'
+    volumes:
+      - "~/zk-cluster/zk2/data:/data"
+    networks:
+      - kafka-network
+
+  zk3:
+    container_name: zookeeper3
+    image: wurstmeister/zookeeper:latest
+    restart: always
+    hostname: zk3
+    ports:
+      - "2183:2181"
+    environment:
+      ZOO_MY_ID: 3
+      ZOO_SERVERS: server.1=zk1:2888:3888;2181 server.2=zk2:2888:3888;2181 server.3=zk3:2888:3888;2181
+      ALLOW_ANONYMOUS_LOGIN: 'yes'
+    volumes:
+      - "~/zk-cluster/zk3/data:/data"
     networks:
       - kafka-network
 
@@ -22,21 +70,25 @@ services:
     container_name: kafka1
     image: wurstmeister/kafka
     environment:
-      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      KAFKA_ZOOKEEPER_CONNECT: "zk1:2181,zk2:2182,zk3:2183"
       KAFKA_BROKER_ID: '1'
       KAFKA_LISTENERS: 'PLAINTEXT://:29092,PLAINTEXT_HOST://0.0.0.0:9092'
       KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://kafka1:29092,PLAINTEXT_HOST://52.78.194.214:9092'
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT'
       KAFKA_INTER_BROKER_LISTENER_NAME: 'PLAINTEXT'
-      KAFKA_LOG4J_LOGGERS: "kafka.controller=INFO,kafka.producer.async.DefaultEventHandler=INFO,state.change.logger=INFO"
+      KAFKA_LOG4J_LOGGERS: "kafka.controller=INFO,kafka.producer.async.DefaultEventHandler=INFO,state.change.logger=INFO" # 카프카 로그 설정
       KAFKA_ADVERTISED_PORT: 9092
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3 # 내부 오프셋 토픽 레플리카 설정
+      KAFKA_MIN_INSYNC_REPLICAS: 2 # 메시지 저장되는 브로커 레플리카들 갯수
+      KAFKA_DEFAULT_REPLICATION_FACTOR: 3 # 새로 생성되는 토픽 레플리카 설정
     ports:
       - '9092:9092'
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     depends_on:
-      - zookeeper
+      - zk1
+      - zk2
+      - zk3
     restart: unless-stopped
     networks:
       - kafka-network
@@ -45,7 +97,7 @@ services:
     container_name: kafka2
     image: wurstmeister/kafka
     environment:
-      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      KAFKA_ZOOKEEPER_CONNECT: "zk1:2181,zk2:2182,zk3:2183"
       KAFKA_BROKER_ID: 2
       KAFKA_LISTENERS: 'PLAINTEXT://:29093,PLAINTEXT_HOST://0.0.0.0:9093'
       KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://kafka2:29093,PLAINTEXT_HOST://52.78.194.214:9093'
@@ -54,12 +106,16 @@ services:
       KAFKA_LOG4J_LOGGERS: "kafka.controller=INFO,kafka.producer.async.DefaultEventHandler=INFO,state.change.logger=INFO"
       KAFKA_ADVERTISED_PORT: 9092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+      KAFKA_MIN_INSYNC_REPLICAS: 2
+      KAFKA_DEFAULT_REPLICATION_FACTOR: 3
     ports:
       - '9093:9093'
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     depends_on:
-      - zookeeper
+      - zk1
+      - zk2
+      - zk3
     restart: unless-stopped
     networks:
       - kafka-network
@@ -68,7 +124,7 @@ services:
     container_name: kafka3
     image: wurstmeister/kafka
     environment:
-      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      KAFKA_ZOOKEEPER_CONNECT: "zk1:2181,zk2:2182,zk3:2183"
       KAFKA_BROKER_ID: 3
       KAFKA_LISTENERS: 'PLAINTEXT://:29094,PLAINTEXT_HOST://0.0.0.0:9094'
       KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://kafka3:29094,PLAINTEXT_HOST://52.78.194.214:9094'
@@ -77,12 +133,16 @@ services:
       KAFKA_LOG4J_LOGGERS: "kafka.controller=INFO,kafka.producer.async.DefaultEventHandler=INFO,state.change.logger=INFO"
       KAFKA_ADVERTISED_PORT: 9092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+      KAFKA_MIN_INSYNC_REPLICAS: 2
+      KAFKA_DEFAULT_REPLICATION_FACTOR: 3
     ports:
       - '9094:9094'
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     depends_on:
-      - zookeeper
+      - zk1
+      - zk2
+      - zk3
     restart: unless-stopped
     networks:
       - kafka-network

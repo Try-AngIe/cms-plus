@@ -58,8 +58,8 @@ public class ProductCustomRepository extends BaseCustomRepository<Product> {
                 .join(contractProduct.contract, contract) // 계약-상품 테이블의 외래키인 계약ID를 타고 들어감
                 .where(
                     contractProduct.product.id.eq(productId),
-                        contract.contractStatus.eq(ContractStatus.ENABLED), // 진행중 계약
-                        contractNotDel())
+                    contract.contractStatus.eq(ContractStatus.ENABLED), // 진행중 계약
+                    contractNotDel())
                 .fetchOne();
 
         return (res == null) ? 0 : res.intValue();
@@ -114,9 +114,12 @@ public class ProductCustomRepository extends BaseCustomRepository<Product> {
                 .from(product)
                 // .join(product.vendor, vendor) // 조인문 제거
                 .leftJoin(contractProduct)
-                        .on(contractProduct.product.eq(product), (contractProductNotDel()))
+                        .on(contractProduct.product.eq(product),
+                            contractProduct.contract.contractStatus.eq(ContractStatus.ENABLED),
+                            (contractProductNotDel()))
                 .leftJoin(contract)
-                        .on(contractProduct.contract.eq(contract), (contractNotDel()))
+                        .on(contractProduct.contract.eq(contract),
+                            contractNotDel())
                 .where(
                         productNotDel(),                                        // 상품 소프트 삭제
                         productVendorIdEq(vendorId), // 상품의 고객 아이디 일치(수정된 로직); product.vendor.id.eq(vendorId)

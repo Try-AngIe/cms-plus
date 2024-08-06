@@ -64,6 +64,7 @@ public class Payment extends BaseEntity {
 	 * 간편동의 요청 가능 여부
 	 * */
 	public boolean canReqSimpConsent() {
+
 		return paymentType.canReqSimpConsent();
 	}
 

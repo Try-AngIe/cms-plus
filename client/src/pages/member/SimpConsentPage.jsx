@@ -20,7 +20,7 @@ import {
 } from '@/apis/simpleConsent';
 import { validateField } from '@/utils/validators';
 import { useLocation } from 'react-router-dom';
-import bank from '@/utils/bank/bankCode';
+import { bankCode } from '@/utils/bank/bank';
 
 const SimpConsentPage = () => {
   const start = 0;
@@ -259,7 +259,7 @@ const SimpConsentPage = () => {
           expiryDate: res.paymentMethodInfo.expiryDate,
           cardHolder: res.paymentMethodInfo.cardOwner,
           cardOwnerBirth: res.paymentMethodInfo.cardOwnerBirth,
-          bank: bank[res.paymentMethodInfo.bank.code],
+          bank: bankCode[res.paymentMethodInfo.bank.code],
           accountHolder: res.paymentMethodInfo.accountOwner,
           accountOwnerBirth: res.paymentMethodInfo.accountOwnerBirth,
           accountNumber: res.paymentMethodInfo.accountNumber,
@@ -321,7 +321,6 @@ const SimpConsentPage = () => {
         content={'등록중...'}
         isExistingContract={!!contractId}
         name={contractId ? userData.memberDTO.name : '회원'}
-
       />
       <div className='h-28' />
       {status !== 5 && status !== 6 &&( 

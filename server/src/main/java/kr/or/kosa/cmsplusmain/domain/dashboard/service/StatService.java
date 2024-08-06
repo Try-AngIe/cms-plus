@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import kr.or.kosa.cmsplusmain.domain.billing.entity.BillingStatus;
 import kr.or.kosa.cmsplusmain.domain.dashboard.dto.DayBillingRes;
+import kr.or.kosa.cmsplusmain.domain.dashboard.dto.MonthBillingInfoRes;
 import kr.or.kosa.cmsplusmain.domain.dashboard.dto.RecentFiveContractRes;
 import kr.or.kosa.cmsplusmain.domain.dashboard.dto.StatInfoRes;
 import kr.or.kosa.cmsplusmain.domain.dashboard.dto.TopFiveMemberRes;
@@ -19,7 +20,6 @@ import kr.or.kosa.cmsplusmain.domain.dashboard.dto.query.BillingStatQueryRes;
 import kr.or.kosa.cmsplusmain.domain.dashboard.dto.query.ContractStatQueryRes;
 import kr.or.kosa.cmsplusmain.domain.dashboard.dto.query.DayBillingQueryRes;
 import kr.or.kosa.cmsplusmain.domain.dashboard.dto.query.MemberStatQueryRes;
-import kr.or.kosa.cmsplusmain.domain.dashboard.dto.MonthBillingInfoRes;
 import kr.or.kosa.cmsplusmain.domain.dashboard.dto.query.RecentFiveContractQueryRes;
 import kr.or.kosa.cmsplusmain.domain.dashboard.dto.query.TopFiveMemberQueryRes;
 import kr.or.kosa.cmsplusmain.domain.dashboard.repository.StatRepository;
@@ -71,7 +71,7 @@ public class StatService {
 		if (prevMonthMemberCount == 0) {
 			return 0.0;
 		}
-		return ((double) (curMonthMemberCount - prevMonthMemberCount) / prevMonthMemberCount) * 100;
+		return ((double)(curMonthMemberCount - prevMonthMemberCount) / prevMonthMemberCount) * 100;
 	}
 
 	private Double getBillingPriceGrowth(Long vendorId, int year, int month) {
@@ -92,7 +92,7 @@ public class StatService {
 		if (prevMonthBillingPrice == 0) {
 			return 100.0;
 		}
-		return ((double) (curMonthBillingPrice - prevMonthBillingPrice) / prevMonthBillingPrice) * 100;
+		return ((double)(curMonthBillingPrice - prevMonthBillingPrice) / prevMonthBillingPrice) * 100;
 	}
 
 	public TopInfoRes getTopInfo(Long vendorId) {
@@ -105,7 +105,8 @@ public class StatService {
 	private List<TopFiveMemberRes> getTopFiveMember(Long vendorId) {
 		List<TopFiveMemberQueryRes> queryRes = statRepository.findTopFiveMembers(vendorId);
 		return queryRes.stream()
-			.map(res -> new TopFiveMemberRes(res.getMemberId(), res.getMemberName(), res.getTotalContractPrice(), res.getContractCount()))
+			.map(res -> new TopFiveMemberRes(res.getMemberId(), res.getMemberName(), res.getTotalContractPrice(),
+				res.getContractCount()))
 			.toList();
 	}
 
@@ -156,7 +157,8 @@ public class StatService {
 			));
 	}
 
-	private Map<BillingStatus, Integer> calculateStatusCounts(Map<BillingStatus, List<DayBillingQueryRes>> statusToQRes) {
+	private Map<BillingStatus, Integer> calculateStatusCounts(
+		Map<BillingStatus, List<DayBillingQueryRes>> statusToQRes) {
 		return statusToQRes.entrySet().stream()
 			.collect(Collectors.toMap(
 				Map.Entry::getKey,

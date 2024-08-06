@@ -22,7 +22,7 @@ public class MemberContractStatisticRepository extends V2BaseRepository<Member, 
         return selectWithNotDel(new QMemberContractStatisticDto(
                 contract.id,
                 member.name,
-                member.enrollDate,
+                member.enrollDate.year(),
                 Expressions.numberTemplate(Integer.class,
                         "DATEDIFF({0}, {1})",
                         contract.contractEndDate,

@@ -76,8 +76,8 @@ public class ContractCustomRepository extends BaseCustomRepository<Contract> {
 	}
 
 	/*
-	* 전체 계약 수
-	* */
+	 * 전체 계약 수
+	 * */
 	public int countAllContracts(Long vendorId, ContractSearchReq search) {
 		JPQLQuery<Long> subQuery = jpaQueryFactory
 			.select(contract.id)
@@ -95,8 +95,8 @@ public class ContractCustomRepository extends BaseCustomRepository<Contract> {
 				memberNameContains(search.getMemberName()),        // 회원 이름 포함
 				memberPhoneContains(search.getMemberPhone()),    // 회원 휴대번호 포함
 				contractDayEq(search.getContractDay()),         // 약정일 일치
-				paymentTypeEq(search.getPaymentType()),			// 결제방식 일치
-				paymentMethodEq(search.getPaymentMethod())		// 결제수단 일치
+				paymentTypeEq(search.getPaymentType()),            // 결제방식 일치
+				paymentMethodEq(search.getPaymentMethod())        // 결제수단 일치
 			)
 
 			.groupBy(contract.id)
@@ -134,15 +134,15 @@ public class ContractCustomRepository extends BaseCustomRepository<Contract> {
 	 * */
 	public List<Contract> findContractListItemByMemberId(Long vendorId, Long memberId, PageReq pageReq) {
 		return jpaQueryFactory
-				.selectFrom(contract)
-				.where(
-						contract.vendor.id.eq(vendorId),
-						contract.member.id.eq(memberId),
-						contractNotDel()
-				)
-				.offset(pageReq.getPage())
-				.limit(pageReq.getSize())
-				.fetch();
+			.selectFrom(contract)
+			.where(
+				contract.vendor.id.eq(vendorId),
+				contract.member.id.eq(memberId),
+				contractNotDel()
+			)
+			.offset(pageReq.getPage())
+			.limit(pageReq.getSize())
+			.fetch();
 	}
 
 	/*
@@ -162,9 +162,9 @@ public class ContractCustomRepository extends BaseCustomRepository<Contract> {
 		return (res != null) ? res.intValue() : 0;
 	}
 
-	/* 
-	* 고객과 계약 id 일치하는 계약 존재 여부
-	* */
+	/*
+	 * 고객과 계약 id 일치하는 계약 존재 여부
+	 * */
 	public boolean isExistContractByUsername(Long contractId, Long vendorId) {
 		Integer res = jpaQueryFactory
 			.selectOne()

@@ -7,6 +7,7 @@ const SortSelect = ({
 }) => {
   const handleChangeOption = async event => {
     const selectedOption = selectOptions.find(option => option.label === event.target.value);
+    console.log(event, ' : '.selectedOption);
     if (event.target.value === 'No') {
       setCurrentOrder('');
       setCurrentOrderBy('');

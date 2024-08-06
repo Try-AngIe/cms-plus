@@ -25,6 +25,9 @@ public class KafkaConsumerConfig {
     @Value("${kafkaGroup.paymentResultGroup}")
     private String paymentResultGroup;
 
+    @Value("${kafkaClient.paymentResultClient}")
+    private String paymentResultClient;
+
     // 결제결과 결제서버에서 받음
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, PaymentResultDto> paymentKafkaListenerContainerFactory() {
@@ -43,9 +46,10 @@ public class KafkaConsumerConfig {
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServerIp);
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
-        props.put(ConsumerConfig.GROUP_ID_CONFIG, paymentResultGroup);
-        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
-        props.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
+        props.put(ConsumerConfig.GROUP_ID_CONFIG, paymentResultGroup); // 그룹
+        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest"); // 컨슈머가 시작됏을 때부터 오프셋 소비 | 이전에 쌓인 오프셋 상관X
+        props.put(ConsumerConfig.CLIENT_ID_CONFIG, paymentResultClient); // 클라이언트ID
+        props.put(JsonDeserializer.TRUSTED_PACKAGES, "*"); // 허용
         JsonDeserializer<PaymentResultDto> jsonDeserializer = new JsonDeserializer<>(PaymentResultDto.class, false); // false; 기본 생성자 호출 비활성화->불변 객체일 경우 성능 향상
         return new DefaultKafkaConsumerFactory<>(props, new StringDeserializer(), jsonDeserializer);
     }

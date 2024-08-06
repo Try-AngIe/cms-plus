@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import TableRow from './TableRow';
 import TableCol from './TableCol';
 import TableSearch from './TableSearch';
@@ -7,6 +7,7 @@ const Table = ({
   cols,
   search,
   rows,
+  size,
   currentPage,
   handleChangeSearch,
   onRowClick,
@@ -53,6 +54,11 @@ const Table = ({
     return selection.length != 0 && selection.length === rows.length;
   };
 
+  useEffect(() => {
+    setSelection([]);
+    handleChangeSelection([]);
+  }, [currentPage]);
+
   return (
     <table className='w-full h-full'>
       <TableCol
@@ -71,6 +77,7 @@ const Table = ({
         {rows &&
           rows.map((row, index) => (
             <TableRow
+              size={size}
               key={index}
               index={index}
               row={row}

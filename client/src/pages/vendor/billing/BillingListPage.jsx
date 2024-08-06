@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import addItem from '@/assets/addItem.svg';
 import card from '@/assets/card.svg';
 import send from '@/assets/send.svg';
+import cardwhite from '@/assets/cardwhite.svg';
 import Card from '@/assets/Card';
 import useDebounce from '@/hooks/useDebounce';
 import { cols, initialSearch, selectOptions } from '@/utils/tableElements/billingElement';
@@ -15,6 +16,8 @@ import { formatPhone } from '@/utils/format/formatPhone';
 import { formatProductsForList } from '@/utils/format/formatProducts';
 import PayRealtimeErrorModal from '@/components/vendor/modal/PayRealtimeErrorModal';
 import useAlert from '@/hooks/useAlert';
+import LoadingSpinner from '@/components/common/loadings/LoadingSpinner';
+import useConfirm from '@/hooks/useConfirm';
 
 const BillingListPage = () => {
   const [billingList, setBillingList] = useState([]); // 청구 목록
@@ -40,7 +43,11 @@ const BillingListPage = () => {
   const [selectedBillings, setSelectedBillings] = useState([]); // 선택된 청구 목록
   const isFirstRender = useRef(true); // 최초 렌더링 여부 확인
 
+  const [isLoading, setIsLoading] = useState(false);
+  const [requestType, setRequestType] = useState('');
+
   const onAlert = useAlert();
+  const onConfirm = useConfirm();
   const navigate = useNavigate();
 
   // <----- 청구 목록 조회 ----->
@@ -71,7 +78,7 @@ const BillingListPage = () => {
         console.error('axiosMemberList => ', err);
       }
     },
-    [currentPage]
+    [currentPage, currentorder, currentorderBy]
   );
 
   // <--------데이터 변환-------->
@@ -129,34 +136,53 @@ const BillingListPage = () => {
   // 실시간 결제
   const handleRealtimePay = async () => {
     if (!selectedBillings || selectedBillings.length === 0) {
-      onAlert({ msg: '선택된 청구가 없습니다.', type: 'default' });
+      onAlert({ msg: '선택된 청구가 없습니다.', type: 'error' });
+      return;
+    }
+
+    const confirmMessage = `${selectedBillings.length}건의 청구를 결제하시겠습니까?`;
+
+    const isSend = await onConfirm({
+      msg: confirmMessage,
+      title: '실시간 결제',
+    });
+
+    if (!isSend) {
       return;
     }
 
     // TODO loading
-    const errors = [];
-    await Promise.allSettled(
-      selectedBillings.map(async billing =>
-        payRealTimeBilling(billing.billingId).catch(err =>
-          errors.push({
-            from: billing,
-            res: err.response.data,
-            total: selectedBillings.length,
-          })
+    setIsLoading(true);
+    setRequestType('실시간 결제 요청중...');
+    setTimeout(async () => {
+      const errors = [];
+      await Promise.allSettled(
+        selectedBillings.map(async billing =>
+          payRealTimeBilling(billing.billingId).catch(err =>
+            errors.push({
+              from: billing,
+              res: err.response.data,
+              total: selectedBillings.length,
+            })
+          )
         )
-      )
-    );
+      );
+      setIsLoading(false);
 
-    // 실패항목이 있는 경우
-    if (errors.length !== 0) {
-      setPayErrors(errors);
-      setIsShowPayErrorModal(true);
-    }
-    // 실패항목이 없는 경우
-    else {
-      onAlert({ msg: `${selectedBillings.length}개의 청구 결제를 성공했습니다.`, type: 'success' });
-      axiosBillingList();
-    }
+      // 실패항목이 있는 경우
+      if (errors.length !== 0) {
+        setPayErrors(errors);
+        setIsShowPayErrorModal(true);
+      }
+      // 실패항목이 없는 경우
+      else {
+        onAlert({
+          msg: `${selectedBillings.length}개의 청구 결제를 성공했습니다.`,
+          type: 'success',
+        });
+        axiosBillingList();
+      }
+    }, 1500);
   };
 
   // 청구서 발송
@@ -166,31 +192,47 @@ const BillingListPage = () => {
       return;
     }
 
-    // TODO loading
-    const errors = [];
-    await Promise.allSettled(
-      selectedBillings.map(async billing =>
-        sendInvoice(billing.billingId).catch(err =>
-          errors.push({
-            from: billing,
-            res: err.response.data,
-            total: selectedBillings.length,
-          })
-        )
-      )
-    );
+    const confirmMessage = `${selectedBillings.length}건의 청구서를 발송하시겠습니까?`;
 
-    // 실패항목이 있는 경우
-    if (errors.length !== 0) {
-      setInvoiceErrors(errors);
-      setIsShowInvoiceErrorModal(true);
-    } else {
-      onAlert({
-        msg: `${selectedBillings.length}개의 청구서 발송을 성공했습니다.`,
-        type: 'success',
-      });
-      axiosBillingList();
+    const isSend = await onConfirm({
+      msg: confirmMessage,
+      title: '청구서 발송',
+    });
+
+    if (!isSend) {
+      return;
     }
+
+    // TODO loading
+    setIsLoading(true);
+    setRequestType('청구서 발송 대기중...');
+    setTimeout(async () => {
+      const errors = [];
+      await Promise.allSettled(
+        selectedBillings.map(async billing =>
+          sendInvoice(billing.billingId).catch(err =>
+            errors.push({
+              from: billing,
+              res: err.response.data,
+              total: selectedBillings.length,
+            })
+          )
+        )
+      );
+      setIsLoading(false);
+
+      // 실패항목이 있는 경우
+      if (errors.length !== 0) {
+        setInvoiceErrors(errors);
+        setIsShowInvoiceErrorModal(true);
+      } else {
+        onAlert({
+          msg: `${selectedBillings.length}개의 청구서 발송을 성공했습니다.`,
+          type: 'success',
+        });
+        axiosBillingList();
+      }
+    }, 1500);
   };
 
   // <--------청구 상세 조회 페이지 이동-------->
@@ -289,7 +331,7 @@ const BillingListPage = () => {
         <PayRealtimeErrorModal
           errors={payErrors}
           isShowModal={isShowPayErrorModal}
-          icon={card}
+          icon={cardwhite}
           setIsShowModal={setIsShowPayErrorModal}
           modalTitle={'실시간 결제'}
         />
@@ -298,11 +340,12 @@ const BillingListPage = () => {
         <PayRealtimeErrorModal
           errors={invoiceErrors}
           isShowModal={isShowInvoiceErrorModal}
-          icon={card}
+          icon={send}
           setIsShowModal={setIsShowInvoiceErrorModal}
           modalTitle={'청구서 발송'}
         />
       )}
+      {isLoading && <LoadingSpinner size='xl' text={requestType} shape='box' />}
     </div>
   );
 };

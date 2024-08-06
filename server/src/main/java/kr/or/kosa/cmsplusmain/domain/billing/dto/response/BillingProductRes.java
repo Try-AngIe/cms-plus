@@ -7,12 +7,12 @@ import lombok.Getter;
 
 @Getter
 public class BillingProductRes {
-	private final Long billingProductId;		// 청구상품 ID
-	private final Long billingId;				// 청구 ID
-	private final Long productId;				// 상품 ID
-	private final String name;					// 상품명
-	private final Integer price;				// 청구상품 가격
-	private final Integer quantity;				// 청구상품 수량
+	private final Long billingProductId;        // 청구상품 ID
+	private final Long billingId;                // 청구 ID
+	private final Long productId;                // 상품 ID
+	private final String name;                    // 상품명
+	private final Integer price;                // 청구상품 가격
+	private final Integer quantity;                // 청구상품 수량
 
 	@QueryProjection
 	public BillingProductRes(Long billingProductId, Long billingId, Long productId, String name, Integer price,

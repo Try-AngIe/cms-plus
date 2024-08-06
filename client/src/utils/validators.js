@@ -3,18 +3,28 @@
 import { regex } from './regex';
 
 // 생년월일 입력시, "2125-21-31"과 같은 유효하지 않은 날짜를 걸러내기 위함
-export const isValidDate = (dateString) => {
+export const isValidDate = dateString => {
   const [year, month, day] = dateString.split('-').map(Number);
   const date = new Date(year, month - 1, day);
-  return date && date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day;
+  return (
+    date && date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day
+  );
 };
 
-//카드 만료일 검사시, 현재 날짜 이후의 유효한 만료일인지 확인
-export const isValidExpiryDate = (expiryString) => {
+// 카드 만료일 검사시, 현재 날짜 이후의 유효한 만료일인지 확인
+export const isValidExpiryDate = expiryString => {
   const [month, year] = expiryString.split('/').map(Number);
   const expiryDate = new Date(2000 + year, month - 1);
   const today = new Date();
   return expiryDate > today;
+};
+
+// 카드 만료일 년도 검사
+const isCardYearValid = cardYear => {
+  console.log(cardYear);
+  const currentYearLastTwoDigits = String(new Date().getFullYear()).substring(2);
+  console.log(parseInt(cardYear, 10) >= parseInt(currentYearLastTwoDigits, 10));
+  return parseInt(cardYear, 10) >= parseInt(currentYearLastTwoDigits, 10);
 };
 
 export const validateField = (id, value) => {
@@ -57,8 +67,11 @@ export const validateField = (id, value) => {
 
     case 'cardMonth': // 13. 카드 유효기간 (월)
       return regex.cardMonth.test(value);
-      
-    case 'expiryDate': // 14. 카드 만료일
+
+    case 'cardYear': // 14. 카드 유효기간 (년도)
+      return regex.cardYear.test(value) && isCardYearValid(value);
+
+    case 'expiryDate': // 15. 카드 만료일
       return regex.expiryDate.test(value) && isValidExpiryDate(value);
 
     default: // 기타. 빈값을 확인

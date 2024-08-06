@@ -10,7 +10,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import kr.or.kosa.cmsplusmain.domain.base.entity.BaseEntity;
 import kr.or.kosa.cmsplusmain.domain.product.entity.Product;
@@ -46,7 +45,8 @@ public class ContractProduct extends BaseEntity {
 
 	@Comment("계약_상품 이름")
 	@Column(name = "contract_product_name", nullable = false, updatable = false)
-	@ProductName @NotNull
+	@ProductName
+	@NotNull
 	private String name;
 
 	@Comment("계약_상품 가격")
@@ -77,8 +77,8 @@ public class ContractProduct extends BaseEntity {
 	}
 
 	/**
-	* 계약 상품 계산된 금액
-	* */
+	 * 계약 상품 계산된 금액
+	 * */
 	public long getContractProductPrice() {
 		return (long)price * quantity;
 	}

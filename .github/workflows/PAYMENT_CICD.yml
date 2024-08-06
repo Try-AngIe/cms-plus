@@ -13,7 +13,7 @@ env:
   ECS_CLUSTER: t3-back-ecscluster
   ECS_CONTAINER: t3-back-paymentcontainer
   ECS_SERVICE: t3-back-ecscluster/t3-back-paymentservice
-  ECS_TASK_DEFINITION: task-definition-payment.json
+  ECS_TASK_DEFINITION: infra/task-definition-payment.json
 
 permissions:
   contents: read

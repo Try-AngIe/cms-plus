@@ -85,9 +85,10 @@ const FindVendoPasswordModal = ({
       if (res.data) {
         setIsShowModal(false);
         setIsShowResetPasswordModal(true);
+      } else {
+        setIsAuthentication(false);
       }
     } catch (err) {
-      // TODO
       // 아이디가 없을 시 예외 처리
       setIsAuthentication(false);
       console.error('axiosFindPassword => ', err.response);
@@ -96,7 +97,7 @@ const FindVendoPasswordModal = ({
 
   // <----- SMS 폼의 유효성 검사 ----->
   const isValidateSmsForm = () => {
-    const isValiduserName = validateField('username', vendorPasswordFormData.username);
+    const isValiduserName = validateField('name', vendorPasswordFormData.name);
     const isValidPhone = validateField('phone', vendorPasswordFormData.phone);
     const authenticationNumber = vendorPasswordFormData.authenticationNumber;
     return isValiduserName && isValidPhone && authenticationNumber;
@@ -210,7 +211,7 @@ const FindVendoPasswordModal = ({
           onChange={handleChangeValue}
           onKeyDown={handleKeyDown}
           isValid={isAuthentication}
-          errorMsg='인증번호가 틀립니다.'
+          errorMsg='인증번호가 틀렸습니다.'
           maxLength={6}
         />
         <button
@@ -220,7 +221,7 @@ const FindVendoPasswordModal = ({
           className={`font-700 px-4 py-3 text-white rounded-lg transition-all duration-200 ${
             (vendorPasswordFormData.method === 'SMS' && isValidateSmsForm()) ||
             (vendorPasswordFormData.method === 'EMAIL' && isValidateEmailForm())
-              ? 'hover:bg-mint_hover bg-mint '
+              ? 'hover:bg-mint_hover bg-mint curson-pointer'
               : 'bg-btn_disa'
           }`}
           onClick={axiosFindPassword}>

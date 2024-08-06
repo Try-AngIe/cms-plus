@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import kr.or.kosa.cmsplusmain.domain.contract.entity.ContractStatus;
 import org.hibernate.Hibernate;
 import org.hibernate.proxy.HibernateProxy;
 import org.hibernate.proxy.LazyInitializer;
@@ -108,9 +109,14 @@ public class SimpleConsentService {
         Member member = contract.getMember();
         Payment payment = contract.getPayment();
 
-        if (!payment.canReqSimpConsent()) {
+        if (!payment.canReqSimpConsent() ) {
             throw new InvalidPaymentTypeException(
                 "[%s]는 간편동의가 불가능합니다".formatted(payment.getPaymentType().getTitle()));
+        }
+
+        if (contract.getContractStatus() == ContractStatus.DISABLED) {
+            throw new InvalidPaymentTypeException(
+                "종료된 계약은 간편동의가 불가능합니다");
         }
 
         String url = "%s/member/simpconsent?contract=%d&vendor=%d".formatted(

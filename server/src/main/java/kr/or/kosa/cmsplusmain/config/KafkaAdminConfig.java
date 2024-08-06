@@ -46,11 +46,13 @@ public class KafkaAdminConfig {
                 TopicBuilder.name(messagingTopic)
                         .partitions(3)
                         .replicas(3)
-                        .config(TopicConfig.RETENTION_MS_CONFIG, String.valueOf(60000))
+                        .config(TopicConfig.MIN_IN_SYNC_REPLICAS_CONFIG, "2") // 동기화 레플리카 수
+                        .config(TopicConfig.RETENTION_MS_CONFIG, String.valueOf(60000))  // 메시지 보관 시간
                         .build(),
                 TopicBuilder.name(paymentTopic)
                         .partitions(3)
-                        .replicas(3)
+                        .replicas(2)
+                        .config(TopicConfig.MIN_IN_SYNC_REPLICAS_CONFIG, "2")
                         .config(TopicConfig.RETENTION_MS_CONFIG, String.valueOf(60000))
                         .build()
         );

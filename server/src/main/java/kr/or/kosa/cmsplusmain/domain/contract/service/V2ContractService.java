@@ -34,13 +34,9 @@ public class V2ContractService {
 	 * 2회 쿼리 발생 | 청구목록조회, 전체 개수(페이징)
 	 * */
 	public PageRes<V2ContractListItemRes> searchContracts(Long vendorId, ContractSearchReq search, PageReq pageReq) {
-		// 단일 페이지 결과
 		List<V2ContractListItemRes> content = contractRepository.searchContracts(vendorId, search, pageReq);
-
-		// 전체 개수
 		long totalContentCount = contractRepository.countSearchedContracts(vendorId, search);
-
-		return new PageRes<>((int) totalContentCount, pageReq.getSize(), content);
+		return new PageRes<>((int)totalContentCount, pageReq.getSize(), content);
 	}
 
 	/**
@@ -50,13 +46,14 @@ public class V2ContractService {
 	public PageRes<BillingListItemRes> getBillingsByContract(Long vendorId, Long contractId, PageReq pageReq) {
 		validateContractByVendor(vendorId, contractId);
 
-		BillingSearchReq searchReq = new BillingSearchReq();
-		searchReq.setContractId(contractId);
+		BillingSearchReq searchReq = BillingSearchReq.builder()
+			.contractId(contractId)
+			.build();
 
 		List<BillingListItemRes> content = billingRepository.searchBillings(vendorId, searchReq, pageReq);
 		long totalContentCount = billingRepository.countSearchedBillings(vendorId, searchReq);
 
-		return new PageRes<>((int) totalContentCount, pageReq.getSize(), content);
+		return new PageRes<>((int)totalContentCount, pageReq.getSize(), content);
 	}
 
 	/**
@@ -65,7 +62,6 @@ public class V2ContractService {
 	 * */
 	public List<ContractProductRes> getContractProducts(Long vendorId, Long contractId) {
 		validateContractByVendor(vendorId, contractId);
-
 		return contractProductRepository.findAllByContractId(contractId).stream()
 			.map(ContractProductRes::fromEntity)
 			.toList();

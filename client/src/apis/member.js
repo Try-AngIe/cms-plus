@@ -25,7 +25,7 @@ export const getMemberCheck = async (phone, email) => {
 
 // 회원 목록 조회
 export const getMemberList = async (searchParams = {}) => {
-  const res = await privateAxios.get('/v1/vendor/management/members', {
+  const res = await privateAxios.get('/v2/vendor/management/members', {
     params: {
       ...searchParams,
     },
