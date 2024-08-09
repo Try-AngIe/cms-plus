@@ -195,11 +195,12 @@ const SimpConsentPage = () => {
       try {
         setStatus(5); // 로딩
         const preparedData = prepareData(userData);
-        console.log(preparedData);
+        console.log('이게 중요함 : ', preparedData);
         if (contractId) {
           await axiosSendSimpleConsentSignImage();
         } else {
           const res = await sendSimpleConsentData(vendorId, preparedData);
+          ('');
         }
         // 로딩페이지 타임아웃 설정하여 2.5초 후에 성공 상태로 변경
         setTimeout(() => {

@@ -10,7 +10,7 @@ const MemDetailDisplay = ({ memberData }) => {
         <div>
           <div className=' text-text_grey font-800'>전체 계약수</div>
           <div className='text-2xl text-text_black font-700'>
-            총{memberData.contractCount.toLocaleString()}건
+            {`총 ${memberData.contractCount.toLocaleString()}건`}
           </div>
         </div>
       </div>
@@ -20,7 +20,7 @@ const MemDetailDisplay = ({ memberData }) => {
         <div>
           <div className=' text-text_grey font-800'>전체 청구건</div>
           <div className='text-2xl text-text_black font-700'>
-            총{memberData.billingCount.toLocaleString()}건
+            {`총 ${memberData.billingCount.toLocaleString()}건`}
           </div>
         </div>
       </div>
